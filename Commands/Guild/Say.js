@@ -1,7 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { PermissionFlagsBits } = require('discord-api-types/v9');
-const { log, bug } = require('../../Addons/timestamp');
-
+const log = require('../../Addons/Logger');
 module.exports = {
     enabled: true,
     category: 'GUILD',
@@ -26,7 +25,7 @@ module.exports = {
         const { user, guild } = interaction;
 
         // Log who used the command.
-        log(`[/SAY] Command used by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
+        log.info(`[/SAY] Command used by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
 
         try {
             // Create reply to defer the command execution.
@@ -46,9 +45,9 @@ module.exports = {
             // Edit the reply to indicate success.
             await reply.edit({ content: '✅ Your message has been sent correctly.' });
         } catch (error) {
-            bug(`[/SAY] Command error: ${error}`);
+            log.bug(`[/SAY] Command error: ${error}`);
             interaction.editReply({ content: `🥶 Something went wrong with the command.\n> ${error?.message}`, ephemeral: true })
-                .catch((editError) => bug(`[/SAY] Error editing interaction reply: ${editError}`));
+                .catch((editError) => log.bug(`[/SAY] Error editing interaction reply: ${editError}`));
         }
     },
 };

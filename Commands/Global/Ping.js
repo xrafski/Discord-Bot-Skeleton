@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { log, bug } = require('../../Addons/timestamp');
+const log = require('../../Addons/logger');
 
 module.exports = {
 	enabled: true,
@@ -13,7 +13,7 @@ module.exports = {
 		const { user, guild } = interaction;
 
 		// Log who used the command.
-		log(`[/PING] Command used by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
+		log.info(`[/PING] Command used by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
 
 		try {
 			// Send a reply to the user.
@@ -44,9 +44,9 @@ module.exports = {
 			}
 
 		} catch (error) {
-			bug(`[/PING] Command error: ${error}`);
+			log.bug(`[/PING] Command error: ${error}`);
 			interaction.editReply({ content: `🥶 Something went wrong with the command.\n> ${error?.message}`, ephemeral: true })
-				.catch((editError) => bug(`[/PING] Error editing interaction reply: ${editError}`));
+				.catch((editError) => log.bug(`[/PING] Error editing interaction reply: ${editError}`));
 		}
 
 
@@ -57,7 +57,7 @@ module.exports = {
 		 */
 		async function interactionResponse(status, reply) {
 			return reply.edit({ content: `> ${status} Websocket latency is **${Math.round(client.ws.ping)}** ms.`, })
-				.catch((editError) => bug(`[/PING] Error editing interaction reply: ${editError}`));
+				.catch((editError) => log.bug(`[/PING] Error editing interaction reply: ${editError}`));
 		}
 	}
 };

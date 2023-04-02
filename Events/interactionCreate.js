@@ -1,4 +1,4 @@
-const { bug } = require('../Addons/timestamp');
+const log = require('../Addons/Logger');
 
 module.exports = {
     name: 'interactionCreate',
@@ -67,8 +67,8 @@ module.exports = {
                 // Execute the command.
                 command.execute(client, interaction, args);
             } catch (error) {
-                bug('Error with interactionCreate event', error);
-                return interaction.reply({ content: '🐛 An error occurred while executing the command!', ephemeral: true }).catch(err => bug('Error to send interaction response', err));
+                log.bug('Error with interactionCreate event', error);
+                return interaction.reply({ content: '🐛 An error occurred while executing the command!', ephemeral: true }).catch(err => log.bug('Error to send interaction response', err));
             }
 
 

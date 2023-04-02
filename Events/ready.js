@@ -1,10 +1,9 @@
-const { info } = require('../Addons/timestamp');
-
+const log = require('../Addons/Logger');
 module.exports = {
     name: 'ready',
     once: true,
     async execute(client) {
-        info(`⭐ ${process.env.BOT_NAME} is logged in and online`, `version: ${process.env.BOT_VERSION}`);
+        log.info(`⭐ ${process.env.BOT_NAME} is logged in and online`, `version: ${process.env.BOT_VERSION}`);
 
         // Set the client user's presence
         client.user.setPresence({ activities: [{ name: ' ', type: 'WATCHING' }], status: 'idle' });

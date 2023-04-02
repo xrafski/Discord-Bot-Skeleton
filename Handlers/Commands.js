@@ -1,8 +1,8 @@
 const { glob } = require('glob');
 const path = require('path');
 const AsciiTable = require('ascii-table');
-const { debug, info } = require('../Addons/timestamp');
 const { Collection, REST, Routes } = require('discord.js');
+const log = require('../Addons/Logger');
 
 /**
  * Array of guild application interactions.
@@ -25,7 +25,7 @@ const globalCmds = []; // Global application interactions commands.
 const loadAppCmds = (client) =>
     // eslint-disable-next-line no-async-promise-executor
     new Promise(async (resolve, reject) => {
-        process.env.BOT_DEBUG && debug('[LOAD COMMANDS] Started loading application interaction command handler.');
+       log.debug('[LOAD COMMANDS] Started loading application interaction command handler.');
 
         // Create a new table.
         const table = new AsciiTable('Loaded Application Interaction Commands');
@@ -68,7 +68,7 @@ const loadAppCmds = (client) =>
                     client.commands.set(slashCommand.data.name, slashCommand);
 
                     // Log command being loaded.
-                    process.env.BOT_DEBUG && debug(`[LOAD COMMANDS] Loaded '${slashCommand.data.name}' application interaction command.`);
+                    log.debug(`[LOAD COMMANDS] Loaded '${slashCommand.data.name}' application interaction command.`);
 
                     // Finally split slashCommands into separate categories.
                     switch (slashCommand.category) {
@@ -89,7 +89,7 @@ const loadAppCmds = (client) =>
 
             // Send a log when there are no commands loaded.
             if (client.commands.size === 0) {
-                info('[LOAD COMMANDS] No application interactions commands were found.');
+                log.info('[LOAD COMMANDS] No application interactions commands were found.');
             } else {
                 resolve(table.toString());
             }
@@ -109,7 +109,7 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
  */
 const registerGuildCmds = commands =>
     new Promise((resolve, reject) => {
-        process.env.BOT_DEBUG && debug('[REGISTER GUILD INTERACTION COMMANDS] Started refreshing guild application interaction commands.');
+        log.debug('[REGISTER GUILD INTERACTION COMMANDS] Started refreshing guild application interaction commands.');
 
         (async () => {
             try {
@@ -134,7 +134,7 @@ const registerGuildCmds = commands =>
 */
 const registerGlobalCmds = commands =>
     new Promise((resolve, reject) => {
-        process.env.BOT_DEBUG && debug('[REGISTER GLOBAL INTERACTION COMMANDS] Started refreshing global application interaction commands.');
+        log.debug('[REGISTER GLOBAL INTERACTION COMMANDS] Started refreshing global application interaction commands.');
 
         (async () => {
             try {

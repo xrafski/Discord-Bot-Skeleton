@@ -1,12 +1,12 @@
 const AsciiTable = require('ascii-table');
 const { glob } = require('glob');
 const path = require('path');
-const { debug } = require('../Addons/timestamp');
+const log = require('../Addons/Logger');
 
 const eventHandler = client =>
 	// eslint-disable-next-line no-async-promise-executor
 	new Promise(async (resolve, reject) => {
-		process.env.BOT_DEBUG && debug('[EVENT HANDLER] Started loading event handler.');
+		log.debug('[EVENT HANDLER] Started loading event handler.');
 
 		// Create a new table.
 		const table = new AsciiTable('Application Event Listeners');
@@ -39,7 +39,7 @@ const eventHandler = client =>
 			reject(`Error loading application event files: ${error.message}`);
 		}
 
-		process.env.BOT_DEBUG && debug('[EVENT HANDLER] Finished resolving application event handler.');
+		log.debug('[EVENT HANDLER] Finished resolving application event handler.');
 		resolve('[EVENT HANDLER] ✅ Successfully loaded application event handler.');
 	});
 
