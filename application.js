@@ -3,7 +3,7 @@ const { loadAppCmds, guildCmds, registerGuildCmds, registerGlobalCmds, globalCmd
 const { Client, GatewayIntentBits } = require('discord.js');
 const { errorHandler } = require('./Handlers/Error');
 const { eventHandler } = require('./Handlers/Event');
-const log = require('./Addons/logger');
+const log = require('./Addons/Logger');
 
 
 // Create a new client instance
