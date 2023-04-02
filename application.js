@@ -31,26 +31,39 @@ const client = new Client({
 });
 
 log.info('Application initialization started...');
-Promise.all([errorHandler(), eventHandler(client), loadAppCmds(client)])
-    .then(async results => {
-        log.info(results[0]); // Results from errorHandler().
-        // eslint-disable-next-line no-console
-        console.log(results[1]); // Table with loaded events from eventHandler().
-        // eslint-disable-next-line no-console
-        console.log(results[2]); // Table with loaded application interactions from loadAppCmds().
 
-        // Register global interaction commands.
+async function start() {
+    try {
+        const [errorResult, eventsTable, commandsTable] = await Promise.all([
+            errorHandler(),
+            eventHandler(client),
+            loadAppCmds(client)
+        ]);
+
+        log.info(errorResult);
+        // eslint-disable-next-line no-console
+        console.log(eventsTable);
+        // eslint-disable-next-line no-console
+        console.log(commandsTable);
+
+
+        // Register global interaction commands and then register guild interaction commands.
         await registerGlobalCmds(globalCmds)
-            .then(res => log.info(res))
-            .catch(err => log.bug('Error to register global interaction commands', err));
+            .then(res => {
+                log.info(res);
+                return registerGuildCmds(guildCmds);
+            })
+            .then(res => {
+                log.info(res);
+                return client.login(process.env.DISCORD_TOKEN);
+            })
+            .catch(err => log.bug('[STARTUP] Error to register commands or login to Discord', err));
 
-        // Register guild interaction commands.
-        await registerGuildCmds(guildCmds)
-            .then(res => log.info(res))
-            .catch(err => log.bug('Error to register guild interaction commands', err));
+        log.info('📣 Application started successfully!');
+    } catch (err) {
+        log.bug('[STARTUP] Error to start up the bot.', err);
+        process.exit(1);
+    }
+}
 
-        // Login to Discord with your client's token when all promises are resolved.
-        await client.login(process.env.DISCORD_TOKEN)
-            .catch(err => log.bug('[STARTUP] Application login error', err));
-    })
-    .catch(err => log.bug('[STARTUP] Error to start up the bot.', err));
+start();
