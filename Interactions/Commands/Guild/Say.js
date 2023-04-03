@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { PermissionFlagsBits } = require('discord-api-types/v9');
-const log = require('../../Addons/Logger');
+const log = require('../../../Addons/Logger');
 module.exports = {
     enabled: true,
     category: 'GUILD',

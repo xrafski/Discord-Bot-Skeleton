@@ -3,7 +3,7 @@ module.exports = {
     name: 'ready',
     once: true,
     async execute(client) {
-        log.info(`⭐ ${process.env.BOT_NAME} is logged in and online`, `version: ${process.env.BOT_VERSION}`);
+        log.info(`⭐ ${process.env.BOT_NAME} is logged in and online on version: ${process.env.BOT_VERSION}`);
 
         // Set the client user's presence
         client.user.setPresence({ activities: [{ name: ' ', type: 'WATCHING' }], status: 'idle' });

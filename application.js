@@ -1,10 +1,10 @@
 require('dotenv').config();
-const { loadAppCmds, guildCmds, registerGuildCmds, registerGlobalCmds, globalCmds } = require('./Handlers/Commands');
 const { Client, GatewayIntentBits } = require('discord.js');
-const { errorHandler } = require('./Handlers/Error');
-const { eventHandler } = require('./Handlers/Event');
 const log = require('./Addons/Logger');
-
+const { loadAppCmds, guildCmds, registerGuildCmds, registerGlobalCmds, globalCmds } = require('./Handlers/Commands');
+const { loadAppButtons } = require('./Handlers/Buttons');
+const { errorHandler } = require('./Handlers/Errors');
+const { eventHandler } = require('./Handlers/Events');
 
 // Create a new client instance
 const client = new Client({
@@ -29,15 +29,15 @@ const client = new Client({
     ],
     allowedMentions: { parse: ['roles', 'users'], repliedUser: false }
 });
-
 log.info('Application initialization started...');
 
 async function start() {
     try {
-        const [errorResult, eventsTable, commandsTable] = await Promise.all([
+        const [errorResult, eventsTable, commandsTable, buttonTable] = await Promise.all([
             errorHandler(),
             eventHandler(client),
-            loadAppCmds(client)
+            loadAppCmds(client),
+            loadAppButtons(client)
         ]);
 
         log.info(errorResult);
@@ -45,7 +45,8 @@ async function start() {
         console.log(eventsTable);
         // eslint-disable-next-line no-console
         console.log(commandsTable);
-
+        // eslint-disable-next-line no-console
+        console.log(buttonTable);
 
         // Register global interaction commands and then register guild interaction commands.
         await registerGlobalCmds(globalCmds)

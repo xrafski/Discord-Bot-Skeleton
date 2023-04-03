@@ -70,9 +70,29 @@ module.exports = {
                 log.bug('Error with interactionCreate event', error);
                 return interaction.reply({ content: '🐛 An error occurred while executing the command!', ephemeral: true }).catch(err => log.bug('Error to send interaction response', err));
             }
-
-
         }
 
+        if (interaction.isButton()) {
+            {
+
+                try {
+                    // Assing variable to a command.
+                    const button = client.buttons.get(interaction.customId);
+
+                    // Check if command exist.
+                    if (!client.buttons.get(interaction.customId)) {
+                        log.bug('Non supported interaction button used:', interaction.customId);
+                        return interaction.reply({ content: '🐛 It seems that this button is not valid and cannot be executed.\nTry again later...', ephemeral: true });
+                    }
+
+                    // Execute the command.
+                    button.execute(client, interaction);
+                } catch (error) {
+                    log.bug('Error with interactionCreate event', error);
+                    return interaction.reply({ content: '🐛 An error occurred while executing the button!', ephemeral: true })
+                        .catch(err => log.bug('Error to send interaction response', err));
+                }
+            }
+        }
     },
 };

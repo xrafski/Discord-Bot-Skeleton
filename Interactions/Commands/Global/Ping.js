@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const log = require('../../Addons/Logger');
+const log = require('../../../Addons/Logger');
 
 // Constants
 const PING_THRESHOLD = [130, 250];

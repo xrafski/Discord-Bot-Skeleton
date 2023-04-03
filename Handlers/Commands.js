@@ -25,7 +25,7 @@ const globalCmds = []; // Global application interactions commands.
 const loadAppCmds = (client) =>
     // eslint-disable-next-line no-async-promise-executor
     new Promise(async (resolve, reject) => {
-       log.debug('[LOAD COMMANDS] Started loading application interaction command handler.');
+        log.debug('[LOAD COMMANDS] Started loading application interaction command handler.');
 
         // Create a new table.
         const table = new AsciiTable('Loaded Application Interaction Commands');
@@ -36,7 +36,7 @@ const loadAppCmds = (client) =>
 
         try {
             // Load application interaction slash commands files.
-            const appCmdFiles = await glob('Commands/**/*.js');
+            const appCmdFiles = await glob('Interactions/Commands/**/*.js');
 
             for (const file of appCmdFiles) {
                 try {
@@ -56,7 +56,7 @@ const loadAppCmds = (client) =>
                         slashCommand.enabled ? 'ENABLED' : 'DISABLED',
                         slashCommand.category,
                         slashCommand.data.name,
-                        file.split('/').slice(-4).join('/')
+                        file.split('/').slice(-1).join('/')
                     );
 
                     // Check if command is disabled.
