@@ -28,7 +28,7 @@ const loadAppCmds = (client) =>
         log.debug('[LOAD COMMANDS] Started loading application interaction command handler.');
 
         // Create a new table.
-        const table = new AsciiTable('Loaded Application Interaction Commands');
+        const table = new AsciiTable('Application Interaction Commands');
         table.setHeading('Status', 'Category', 'Name', 'File');
 
         // Application interaction collection.
@@ -83,7 +83,7 @@ const loadAppCmds = (client) =>
                             break;
                     }
                 } catch (error) {
-                    reject(`Error loading application interaction file '${file}': ${error.message}`);
+                    reject(`Error loading application interaction command file '${file}': ${error.message}`);
                 }
             }
 

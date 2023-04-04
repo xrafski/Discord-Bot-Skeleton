@@ -72,6 +72,7 @@ module.exports = {
             }
         }
 
+        // Application interaction button handler.
         if (interaction.isButton()) {
             {
 
@@ -90,6 +91,29 @@ module.exports = {
                 } catch (error) {
                     log.bug('Error with interactionCreate event', error);
                     return interaction.reply({ content: '🐛 An error occurred while executing the button!', ephemeral: true })
+                        .catch(err => log.bug('Error to send interaction response', err));
+                }
+            }
+        }
+
+        // Application interaction modal handler.
+        if (interaction.isModalSubmit()) {
+            {
+                try {
+                    // Assing variable to a command.
+                    const modal = client.modals.get(interaction.customId);
+
+                    // Check if command exist.
+                    if (!modal) {
+                        log.bug('Non supported interaction modal used:', interaction.customId);
+                        return interaction.reply({ content: '🐛 It seems that this modal is not valid and cannot be executed.\nTry again later...', ephemeral: true });
+                    }
+
+                    // Execute the command.
+                    modal.execute(client, interaction);
+                } catch (error) {
+                    log.bug('Error with interactionCreate event', error);
+                    return interaction.reply({ content: '🐛 An error occurred while executing the modal!', ephemeral: true })
                         .catch(err => log.bug('Error to send interaction response', err));
                 }
             }

@@ -45,11 +45,11 @@ module.exports = {
 			await interactionResponse(status, ping, reply);
 
 		} catch (error) {
-			log.bug(`[/PING] Command error: ${error}`);
+			log.bug('[/PING] Interaction error:', error);
 
 			// Send an error message to the user.
 			await interaction.editReply({
-				content: 'Something went wrong with the command. Please try again later.',
+				content: '🥶 Something went wrong with this interaction. Please try again later.',
 				ephemeral: true
 			}).catch((editError) => log.bug(`[/PING] Error editing interaction reply: ${editError}`));
 		}

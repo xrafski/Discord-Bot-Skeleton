@@ -16,14 +16,14 @@ const loadAppButtons = (client) =>
         log.debug('[LOAD BUTTONS] Started loading application interaction button handler.');
 
         // Create a new table.
-        const table = new AsciiTable('Loaded Application Interaction Buttons');
+        const table = new AsciiTable('Application Interaction Buttons');
         table.setHeading('Status', 'Name', 'File');
 
         // Application interaction collection.
         client.buttons = new Collection();
 
         try {
-            // Load application interaction slash button files.
+            // Load application interaction button files.
             const appButtonFiles = await glob('Interactions/Buttons/*.js');
 
             for (const file of appButtonFiles) {
@@ -58,7 +58,7 @@ const loadAppButtons = (client) =>
                     log.debug(`[LOAD BUTTONS] Loaded '${buttonInteraction.name}' application interaction button.`);
 
                 } catch (error) {
-                    reject(`Error loading application interaction file '${file}': ${error.message}`);
+                    reject(`Error loading application interaction button file '${file}': ${error.message}`);
                 }
             }
 

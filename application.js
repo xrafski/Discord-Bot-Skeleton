@@ -5,6 +5,7 @@ const { loadAppCmds, guildCmds, registerGuildCmds, registerGlobalCmds, globalCmd
 const { loadAppButtons } = require('./Handlers/Buttons');
 const { errorHandler } = require('./Handlers/Errors');
 const { eventHandler } = require('./Handlers/Events');
+const loadAppModals = require('./Handlers/Modals');
 
 // Create a new client instance
 const client = new Client({
@@ -33,20 +34,23 @@ log.info('Application initialization started...');
 
 async function start() {
     try {
-        const [errorResult, eventsTable, commandsTable, buttonTable] = await Promise.all([
+        const [errorResult, eventsTable, commandsTable, buttonTable, modalTable] = await Promise.all([
             errorHandler(),
             eventHandler(client),
             loadAppCmds(client),
-            loadAppButtons(client)
+            loadAppButtons(client),
+            loadAppModals(client),
         ]);
 
-        log.info(errorResult);
+        log.info(errorResult); // Response from error handler being loaded.
         // eslint-disable-next-line no-console
-        console.log(eventsTable);
+        console.log(eventsTable); // Ascii table with event listeners loaded.
         // eslint-disable-next-line no-console
-        console.log(commandsTable);
+        console.log(commandsTable); // Ascii table with application commands loaded.
         // eslint-disable-next-line no-console
-        console.log(buttonTable);
+        console.log(buttonTable); // Ascii table with application buttons loaded.
+        // eslint-disable-next-line no-console
+        console.log(modalTable); // Ascii table with application modals loaded.
 
         // Register global interaction commands and then register guild interaction commands.
         await registerGlobalCmds(globalCmds)

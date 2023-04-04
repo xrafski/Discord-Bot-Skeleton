@@ -45,9 +45,13 @@ module.exports = {
             // Edit the reply to indicate success.
             await reply.edit({ content: '✅ Your message has been sent correctly.' });
         } catch (error) {
-            log.bug(`[/SAY] Command error: ${error}`);
-            interaction.editReply({ content: `🥶 Something went wrong with the command.\n> ${error?.message}`, ephemeral: true })
-                .catch((editError) => log.bug(`[/SAY] Error editing interaction reply: ${editError}`));
+            log.bug('[/SAY] Interaction error:', error);
+
+            // Send an error message to the user.
+            await interaction.editReply({
+                content: '🥶 Something went wrong with this interaction. Please try again later.',
+                ephemeral: true
+            }).catch((editError) => log.bug(`[/SAY] Error editing interaction reply: ${editError}`));
         }
     },
 };
