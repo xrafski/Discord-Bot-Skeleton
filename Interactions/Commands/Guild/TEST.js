@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { PermissionFlagsBits } = require('discord-api-types/v9');
 const log = require('../../../Addons/Logger');
-const { showExampleModal } = require('../../Modals/Example');
+const { addExampleButton } = require('../../Buttons/Example');
 
 module.exports = {
     enabled: true,
@@ -19,31 +19,16 @@ module.exports = {
 
         try {
             // Create reply to defer the command execution.
-            // const reply = await interaction.reply({ content: 'Generating response...', ephemeral: true });
-            // ##################################################################################################################################
-            // // Test with a exampleButton.
-            // const row = new ActionRowBuilder()
-            //     .addComponents(
-            //         new ButtonBuilder()
-            //             .setCustomId('exampleButton')
-            //             .setLabel('Click me!')
-            //             .setStyle(ButtonStyle.Primary),
-            //     );
+            const reply = await interaction.reply({ content: 'Preparing reseponse...', ephemeral: true });
 
-            // if (!interaction.channel) {
-            //     throw new Error('Interaction channel is undefined.');
-            // }
+            // const [channelId, messageId] = args[0].split('/').slice(-2);
+            // const channel = await client.channels.fetch(channelId);
+            // const message = await channel.messages.fetch(messageId);
 
-            // // Send channel message.
-            // await interaction.channel.send({ content: 'Hello, world!', components: [row] });
-            // ##################################################################################################################################
-            // Test with a modal.
-
-            // Show modal to the user.
-            showExampleModal(interaction);
+            addExampleButton(interaction);
 
             // Edit the reply to indicate success.
-            // await reply.edit({ content: '✅ Your response has been sent correctly.' });
+            await reply.edit({ content: '✅ Your response has been sent correctly.' });
         } catch (error) {
             log.bug('[/TEST] Interaction error:', error);
 

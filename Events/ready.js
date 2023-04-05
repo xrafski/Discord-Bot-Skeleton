@@ -1,6 +1,7 @@
+const { Events } = require('discord.js');
 const log = require('../Addons/Logger');
 module.exports = {
-    name: 'ready',
+    name: Events.ClientReady,
     once: true,
     async execute(client) {
         log.info(`⭐ ${process.env.BOT_NAME} is logged in and online on version: ${process.env.BOT_VERSION}`);

@@ -1,7 +1,8 @@
+const { Events } = require('discord.js');
 const log = require('../Addons/Logger');
 
 module.exports = {
-    name: 'interactionCreate',
+    name: Events.InteractionCreate,
     once: false,
     async execute(client, interaction) {
 
@@ -65,7 +66,7 @@ module.exports = {
                 }
 
                 // Execute the command.
-                command.execute(client, interaction, args);
+                return command.execute(client, interaction, args);
             } catch (error) {
                 log.bug('Error with interactionCreate event', error);
                 return interaction.reply({ content: '🐛 An error occurred while executing the command!', ephemeral: true }).catch(err => log.bug('Error to send interaction response', err));
@@ -74,48 +75,75 @@ module.exports = {
 
         // Application interaction button handler.
         if (interaction.isButton()) {
-            {
 
-                try {
-                    // Assing variable to a command.
-                    const button = client.buttons.get(interaction.customId);
+            try {
+                // Assing variable to a command.
+                const button = client.buttons.get(interaction.customId);
 
-                    // Check if command exist.
-                    if (!client.buttons.get(interaction.customId)) {
-                        log.bug('Non supported interaction button used:', interaction.customId);
-                        return interaction.reply({ content: '🐛 It seems that this button is not valid and cannot be executed.\nTry again later...', ephemeral: true });
-                    }
-
-                    // Execute the command.
-                    button.execute(client, interaction);
-                } catch (error) {
-                    log.bug('Error with interactionCreate event', error);
-                    return interaction.reply({ content: '🐛 An error occurred while executing the button!', ephemeral: true })
-                        .catch(err => log.bug('Error to send interaction response', err));
+                // Check if command exist.
+                if (!client.buttons.get(interaction.customId)) {
+                    log.bug('Non supported interaction button used:', interaction.customId);
+                    return interaction.reply({ content: '🐛 It seems that this button is not valid and cannot be executed.\nTry again later...', ephemeral: true });
                 }
+
+                // Execute the command.
+                return button.execute(client, interaction);
+            } catch (error) {
+                log.bug('Error with interactionCreate event', error);
+                return interaction.reply({ content: '🐛 An error occurred while executing the button!', ephemeral: true })
+                    .catch(err => log.bug('Error to send interaction response', err));
             }
         }
 
         // Application interaction modal handler.
         if (interaction.isModalSubmit()) {
-            {
-                try {
-                    // Assing variable to a command.
-                    const modal = client.modals.get(interaction.customId);
 
-                    // Check if command exist.
-                    if (!modal) {
-                        log.bug('Non supported interaction modal used:', interaction.customId);
-                        return interaction.reply({ content: '🐛 It seems that this modal is not valid and cannot be executed.\nTry again later...', ephemeral: true });
-                    }
+            try {
+                // Assing variable to a command.
+                const modal = client.modals.get(interaction.customId);
 
-                    // Execute the command.
-                    modal.execute(client, interaction);
-                } catch (error) {
-                    log.bug('Error with interactionCreate event', error);
-                    return interaction.reply({ content: '🐛 An error occurred while executing the modal!', ephemeral: true })
-                        .catch(err => log.bug('Error to send interaction response', err));
+                // Check if command exist.
+                if (!modal) {
+                    log.bug('Non supported interaction modal used:', interaction.customId);
+                    return interaction.reply({ content: '🐛 It seems that this modal is not valid and cannot be executed.\nTry again later...', ephemeral: true });
                 }
+
+                // Execute the command.
+                return modal.execute(client, interaction);
+            } catch (error) {
+                log.bug('Error with interactionCreate event', error);
+                return interaction.reply({ content: '🐛 An error occurred while executing the modal!', ephemeral: true })
+                    .catch(err => log.bug('Error to send interaction response', err));
+            }
+        }
+
+        // Application interaction select menu handler.
+        if (interaction.isStringSelectMenu()) {
+
+            try {
+                // Assing variable to a command.
+                const selection = client.menus.get(interaction.customId);
+
+                // Check if command exist.
+                if (!selection) {
+                    log.bug('Non supported interaction selection menu used:', interaction.customId);
+                    return interaction.reply({ content: '🐛 It seems that this selection menu is not valid and cannot be executed.\nTry again later...', ephemeral: true });
+                }
+
+                // Create args array
+                const args = [];
+
+                // Loop through interaction.values to get arguments into args array
+                for (const option of interaction.values) {
+                    args.push(option);
+                }
+
+                // Execute the command.
+                return selection.execute(client, interaction, args);
+            } catch (error) {
+                log.bug('Error with interactionCreate event', error);
+                return interaction.reply({ content: '🐛 An error occurred while executing the selection menu!', ephemeral: true })
+                    .catch(err => log.bug('Error to send interaction response', err));
             }
         }
     },
