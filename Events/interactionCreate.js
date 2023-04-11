@@ -108,8 +108,16 @@ module.exports = {
                     return interaction.reply({ content: '🐛 It seems that this modal is not valid and cannot be executed.\nTry again later...', ephemeral: true });
                 }
 
+                // Create args array
+                const args = [];
+
+                // Push user input into args array.
+                for (const iterator of interaction.fields.components) {
+                    args.push(iterator.components[0].value);
+                }
+
                 // Execute the command.
-                return modal.execute(client, interaction);
+                return modal.execute(client, interaction, args);
             } catch (error) {
                 log.bug('Error with interactionCreate event', error);
                 return interaction.reply({ content: '🐛 An error occurred while executing the modal!', ephemeral: true })

@@ -16,21 +16,31 @@ async function showExampleModal(interaction) {
             // The label is the prompt the user sees for this input
             .setLabel('What\'s your favorite color?')
             // Short means only a single line of text
-            .setStyle(TextInputStyle.Short);
+            .setStyle(TextInputStyle.Short)
+            .setRequired(false);
 
         const hobbiesInput = new TextInputBuilder()
             .setCustomId('hobbiesInput')
             .setLabel('What\'s some of your favorite hobbies?')
             // Paragraph means multiple lines of text.
-            .setStyle(TextInputStyle.Paragraph);
+            .setStyle(TextInputStyle.Paragraph)
+            .setRequired(false);
+
+        const gameInput = new TextInputBuilder()
+            .setCustomId('gameInput')
+            .setLabel('What\'s your favorite game?')
+            // Paragraph means multiple lines of text.
+            .setStyle(TextInputStyle.Short)
+            .setRequired(false);
 
         // An action row only holds one text input,
         // so you need one action row per text input.
         const firstActionRow = new ActionRowBuilder().addComponents(favoriteColorInput);
         const secondActionRow = new ActionRowBuilder().addComponents(hobbiesInput);
+        const thirdActionRow = new ActionRowBuilder().addComponents(gameInput);
 
         // Add inputs to the modal.
-        exampleModal.addComponents(firstActionRow, secondActionRow);
+        exampleModal.addComponents(firstActionRow, secondActionRow, thirdActionRow);
 
         // Show the modal to the user.
         await interaction.showModal(exampleModal);
@@ -52,15 +62,11 @@ module.exports = {
     enabled: true,
     name: 'exampleModal',
     showExampleModal, // Function to show modal to the user. Used on different files as: showExampleModal(interaction)
-    async execute(client, interaction) { // That handles the interation submit response.
+    async execute(client, interaction, args) { // That handles the interation submit response.
 
         try {
-            // Get the data entered by the user
-            const favoriteColor = interaction.fields.getTextInputValue('favoriteColorInput');
-            const hobbies = interaction.fields.getTextInputValue('hobbiesInput');
-
             // Log user arguments to the console.
-            log.info({ favoriteColor, hobbies });
+            log.info(args);
 
             // Send a message confirming that the form has been submitted successfully.
             await interaction.reply({ content: 'You submitted the example modal!', ephemeral: true });
