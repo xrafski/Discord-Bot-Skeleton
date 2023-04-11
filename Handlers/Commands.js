@@ -99,7 +99,7 @@ const loadAppCmds = (client) =>
     });
 
 // Create rest variable for application slash command registry.
-const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
+const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_APP_TOKEN);
 
 /**
  * Refreshes guild interaction commands.
@@ -114,7 +114,7 @@ const registerGuildCmds = commands =>
         (async () => {
             try {
                 await rest.put(
-                    Routes.applicationGuildCommands(process.env.DISCORD_ID, process.env.SERVER_ID),
+                    Routes.applicationGuildCommands(process.env.DISCORD_APP_ID, process.env.SERVER_ID),
                     { body: commands }
                 );
 
@@ -139,7 +139,7 @@ const registerGlobalCmds = commands =>
         (async () => {
             try {
                 await rest.put(
-                    Routes.applicationCommands(process.env.DISCORD_ID),
+                    Routes.applicationCommands(process.env.DISCORD_APP_ID),
                     { body: commands }
                 );
 

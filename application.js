@@ -11,23 +11,7 @@ const loadAppMenus = require('./Handlers/Menus');
 // Create a new client instance
 const client = new Client({
     intents: [
-        // GatewayIntentBits.DirectMessageReactions,
-        // GatewayIntentBits.DirectMessageTyping,
-        // GatewayIntentBits.DirectMessages,
-        // GatewayIntentBits.GuildBans,
-        // GatewayIntentBits.GuildEmojisAndStickers,
-        // GatewayIntentBits.GuildIntegrations,
-        // GatewayIntentBits.GuildInvites,
-        // GatewayIntentBits.GuildMembers,
-        // GatewayIntentBits.GuildMessageReactions,
-        // GatewayIntentBits.GuildMessageTyping,
-        // GatewayIntentBits.GuildMessages,
-        // GatewayIntentBits.GuildPresences,
-        // GatewayIntentBits.GuildScheduledEvents,
-        // GatewayIntentBits.GuildVoiceStates,
-        // GatewayIntentBits.GuildWebhooks,
         GatewayIntentBits.Guilds,
-        // GatewayIntentBits.MessageContent,
     ],
     allowedMentions: { parse: ['roles', 'users'], repliedUser: false }
 });
@@ -64,7 +48,7 @@ async function start() {
             })
             .then(res => {
                 log.info(res);
-                return client.login(process.env.DISCORD_TOKEN);
+                return client.login(process.env.DISCORD_APP_TOKEN);
             })
             .catch(err => log.bug('[STARTUP] Error to register commands or login to Discord', err));
 
