@@ -1,5 +1,10 @@
-const { Events } = require('discord.js');
+const { Events, ActivityType } = require('discord.js');
 const log = require('../Addons/Logger');
+const refreshTime = 1000 * 60 * 1;
+
+// Status emojis.
+const statusEmojis = ['👮‍♂️', '🕵️‍♂️', '💂‍♂️', '👨‍🎓', '🤵', '🚨', '🚔', '🚓', '🤙'];
+
 module.exports = {
     name: Events.ClientReady,
     once: true,
@@ -7,21 +12,26 @@ module.exports = {
         log.info(`⭐ ${process.env.BOT_NAME} is logged in and online on version: ${process.env.BOT_VERSION}`);
 
         // Set the client user's presence
-        client.user.setPresence({ activities: [{ name: ' ', type: 'WATCHING' }], status: 'idle' });
+        client.user.setPresence({ status: 'idle' });
 
-        // Update bot's setPresence every hour
+        // Update bot's setPresence every refreshTime time.
         setInterval(() => {
-            let memberCount = 0;
-            for (const guild of client.guilds.cache) memberCount = memberCount + guild[1].memberCount; // Count all members in guilds.
 
-            // Set client presence status.
-            client.user.setPresence({
-                activities: [{
-                    name: `${memberCount} users 👮‍♂️`,
-                    type: 'WATCHING'
-                }], status: 'online'
-            });
-        }, 1000 * 60 * 60);
+            try {
+                let memberCount = 0;
+                for (const guild of client.guilds.cache) memberCount = memberCount + guild[1].memberCount; // Count members in all guilds.
 
+                // Set client presence status.
+                client.user.setPresence({
+                    activities: [{
+                        name: `${memberCount} users ${statusEmojis[Math.floor(Math.random() * statusEmojis.length)]}`,
+                        type: ActivityType.Watching
+                    }], status: 'online'
+                });
+
+            } catch (error) {
+                log.bug('Error to set presence status for the bot', error);
+            }
+        }, refreshTime);
     },
 };

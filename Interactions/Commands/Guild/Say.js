@@ -6,18 +6,18 @@ module.exports = {
     category: 'GUILD',
     data: new SlashCommandBuilder()
         .setName('say')
-        .setDescription('Say something as the bot (at least one argument must be filled).')
+        .setDescription('Say something using the bot.')
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addStringOption((option) =>
             option
                 .setName('text')
-                .setDescription('Optional type text to send')
+                .setDescription('Text to send (OPTIONAL)')
                 .setRequired(false)
         )
         .addStringOption((option) =>
             option
                 .setName('attachment')
-                .setDescription('Optional link to the message attachment')
+                .setDescription('URL to an image (OPTIONAL)')
                 .setRequired(false)
         ),
 
@@ -37,17 +37,44 @@ module.exports = {
 
             // Assign values to variables.
             const content = args[0] ?? null;
-            const files = args[1] ? [args[1]] : [];
 
-            // Send channel message.
-            await interaction.channel.send({ content, files });
+            // Send a joke empty message if no arguments are passed.
+            if (!args.length) {
+                await interaction.channel.send({
+                    content: 'ㅤ',
+                });
+                return await reply.edit({ content: '✅ Your **EMPTY** message has been sent correctly 🙃' });
+            }
 
-            // Edit the reply to indicate success.
-            await reply.edit({ content: '✅ Your message has been sent correctly.' });
+            // Send a message with the attachment argument.
+            if (args[1]) {
+                // Send channel message with an attachment.
+                await interaction.channel.send({
+                    content,
+                    files: [args[1]]
+                });
+                return await reply.edit({ content: '✅ Your message has been sent correctly.' });
+            }
+
+            // Send a message with just regular text content.
+            await interaction.channel.send({
+                content,
+            });
+            return await reply.edit({ content: '✅ Your message has been sent correctly.' });
+
+
         } catch (error) {
             log.bug('[/SAY] Interaction error:', error);
 
-            // Send an error message to the user.
+            // Send an error message to the user about missing permissions.
+            if (error?.message === 'Missing Permissions') {
+                await interaction.editReply({
+                    content: `🥶 Something went wrong with this interaction.\nMake sure ${client.user} has 'Send Messages' and/or 'Attach Files' permission to perform this action.`,
+                    ephemeral: true
+                }).catch((editError) => log.bug(`[/SAY] Error editing interaction reply: ${editError}`));
+            }
+
+            // Default error message to the user.
             await interaction.editReply({
                 content: '🥶 Something went wrong with this interaction. Please try again later.',
                 ephemeral: true
