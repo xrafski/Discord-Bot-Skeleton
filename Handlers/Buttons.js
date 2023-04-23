@@ -64,7 +64,7 @@ const loadAppButtons = (client) =>
 
             // Send a log when there are no buttons loaded.
             if (client.buttons.size === 0) {
-                log.info('[LOAD BUTTONS] No application interactions buttons were found.');
+                resolve('[LOAD BUTTONS] No application interactions buttons were found or enabled.');
             } else {
                 resolve(table.toString());
             }

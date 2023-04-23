@@ -34,7 +34,7 @@ async function addExampleButton(interaction) {
 }
 
 module.exports = {
-    enabled: true,
+    enabled: false,
     name: 'exampleButton',
     exampleButtonBuilder, // The example button builder.
     addExampleButton, // Function to add a button component to a provided message object. Used on different files as: addExampleButton(interaction, message)

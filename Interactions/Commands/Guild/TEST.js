@@ -4,7 +4,7 @@ const log = require('../../../Addons/Logger');
 const { showExampleModal } = require('../../Modals/Example');
 
 module.exports = {
-    enabled: true,
+    enabled: false,
     category: 'GUILD',
     data: new SlashCommandBuilder()
         .setName('test')

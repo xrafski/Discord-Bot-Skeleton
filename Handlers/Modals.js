@@ -64,8 +64,7 @@ const loadAppModals = (client) =>
 
             // Send a log when there are no modals loaded.
             if (client.modals.size === 0) {
-                log.info('[LOAD MODALS] No application interactions modals were found.');
-                resolve('[LOAD MODALS] No application interactions modals were found.');
+                resolve('[LOAD MODALS] No application interactions modals were found or enabled.');
             } else {
                 resolve(table.toString());
             }

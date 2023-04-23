@@ -89,7 +89,7 @@ const loadAppCmds = (client) =>
 
             // Send a log when there are no commands loaded.
             if (client.commands.size === 0) {
-                log.info('[LOAD COMMANDS] No application interactions commands were found.');
+                resolve('[LOAD COMMANDS] No application interactions commands were found or enabled.');
             } else {
                 resolve(table.toString());
             }

@@ -53,7 +53,7 @@ async function addExampleMenu(interaction, message) {
 
 // Export logic that will be executed when the selection menu option is selected.
 module.exports = {
-    enabled: true,
+    enabled: false,
     name: 'exampleMenu',
     addExampleMenu, // Function to add selection menu component to a provided message object. Used on different files as: addExampleMenu(interaction, message)
     async execute(client, interaction, args) { // That handles the interation submit response.

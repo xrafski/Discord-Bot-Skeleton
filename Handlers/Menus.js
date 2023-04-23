@@ -64,8 +64,7 @@ const loadAppMenus = (client) =>
 
             // Send a log when there are no menus loaded.
             if (client.menus.size === 0) {
-                log.info('[LOAD MENUS] No application interactions selection menus were found.');
-                resolve('[LOAD MENUS] No application interactions selection menus were found.');
+                resolve('[LOAD MENUS] No application interactions selection menus were found or enabled.');
             } else {
                 resolve(table.toString());
             }
