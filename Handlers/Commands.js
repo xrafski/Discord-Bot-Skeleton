@@ -106,37 +106,12 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_APP_TOKEN)
  * @returns {Promise} - A promise that resolves with a success message, or rejects with an error message.
  * @example await registerGuildCmds(cmds, '1234567890', 'some club name').then(function).catch(error);
  */
-// const registerGuildCmds = async (commands, guildID, friendlyName) =>
-//     new Promise((resolve, reject) => {
-//         if (!commands || !guildID || !friendlyName) throw new Error('Missing parameters to register specific application guild commands.');
-//         log.debug(`[REGISTER GUILD COMMANDS] Started refreshing '${friendlyName}' specific application guild commands.`);
-
-//         (async () => {
-//             try {
-//                 await rest.put(
-//                     Routes.applicationGuildCommands(process.env.DISCORD_APP_ID, guildID),
-//                     { body: commands }
-//                 );
-
-//                 setTimeout(() => {
-//                     resolve(`[REGISTER GUILD COMMANDS] ✅ Successfully refreshed '${friendlyName}' specific application guild commands.`, commands);
-//                 }, 5000);
-
-//                 // resolve(`[REGISTER GUILD COMMANDS] ✅ Successfully refreshed '${friendlyName}' specific application guild commands.`, commands);
-//             } catch (err) {
-//                 reject(`[REGISTER GUILD COMMANDS] Error to refresh '${friendlyName}' specific application guild commands: ${err.message}`);
-//             }
-//         })();
-//     });
-
-
 async function registerGuildCmds(commands, guildID, friendlyName) {
     return new Promise((resolve, reject) => {
         if (!commands || !guildID || !friendlyName) throw new Error('Missing parameters to register specific application guild commands.');
         log.debug(`[REGISTER GUILD COMMANDS] Started refreshing '${friendlyName}' specific application guild commands.`);
 
         setTimeout(async () => {
-
             try {
                 await rest.put(
                     Routes.applicationGuildCommands(process.env.DISCORD_APP_ID, guildID),
