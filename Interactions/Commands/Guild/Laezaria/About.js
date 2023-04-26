@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const log = require('../../../../Addons/Logger');
 
 module.exports = {
-    enabled: true,
+    enabled: false,
     guild: 'LAEZARIA',
     data: new SlashCommandBuilder()
         .setName('about')
