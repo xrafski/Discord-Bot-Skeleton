@@ -6,8 +6,8 @@ const PING_THRESHOLD = [130, 250];
 const STATUS_EMOJIS = ['✨', '🆗', '❗'];
 
 module.exports = {
-	enabled: false,
-	category: 'GLOBAL',
+	enabled: true,
+	guild: 'GLOBAL',
 	data: new SlashCommandBuilder()
 		.setName('ping')
 		.setDescription('Returns websocket connection ping.')

@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { Client, GatewayIntentBits } = require('discord.js');
 const log = require('./Addons/Logger');
-const { loadAppCmds, guildCmds, registerGuildCmds, registerGlobalCmds, globalCmds } = require('./Handlers/Commands');
+const { loadAppCmds, registerGuildCmds, registerGlobalCmds, appCommands } = require('./Handlers/Commands');
 const { loadAppButtons } = require('./Handlers/Buttons');
 const { errorHandler } = require('./Handlers/Errors');
 const { eventHandler } = require('./Handlers/Events');
@@ -40,23 +40,29 @@ async function start() {
         // eslint-disable-next-line no-console
         console.log(menuTable); // Ascii table with application selection menus loaded.
 
+
         // Register global interaction commands and then register guild interaction commands.
-        await registerGlobalCmds(globalCmds)
-            .then(res => {
-                log.info(res);
-                return registerGuildCmds(guildCmds);
-            })
-            .then(res => {
-                log.info(res);
-                return client.login(process.env.DISCORD_APP_TOKEN);
+        await registerGlobalCmds(appCommands.global)
+            .then(async regGlobCmdsRes => {
+                log.info(regGlobCmdsRes); // Log global commands registry response.
+
+                // Register guild commands in order and then log to the bot client.
+                registerGuildCommands()
+                    .then(() => {
+                        return client.login(process.env.DISCORD_APP_TOKEN); // Log to the bot client.
+                    });
+
+                async function registerGuildCommands() {
+                    await registerGuildCmds(appCommands.backend, process.env.BACKEND_GUILD_ID, 'Backend Server').then(log.info); // Register backend guild commands and then log.info the results.
+                    await registerGuildCmds(appCommands.laezaria, process.env.TEST_GUIID_ID, 'Laezaria').then(log.info); // Register laezaria guild commands and then log.info the results.
+                }
             })
             .catch(err => log.bug('[STARTUP] Error to register commands or login to Discord', err));
-
-        log.info('📣 Application started successfully!');
     } catch (err) {
         log.bug('[STARTUP] Error to start up the bot.', err);
         process.exit(1);
     }
 }
 
+// Start the application.
 start();

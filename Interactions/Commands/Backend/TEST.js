@@ -5,7 +5,7 @@ const { showExampleModal } = require('../../Modals/Example');
 
 module.exports = {
     enabled: false,
-    category: 'GUILD',
+    guild: 'BACKEND',
     data: new SlashCommandBuilder()
         .setName('test')
         .setDescription('A test command.')

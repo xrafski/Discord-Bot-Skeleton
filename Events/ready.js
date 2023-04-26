@@ -9,7 +9,7 @@ module.exports = {
     name: Events.ClientReady,
     once: true,
     async execute(client) {
-        log.info(`⭐ ${process.env.BOT_NAME} is logged in and online on version: ${process.env.BOT_VERSION}`);
+        log.info(`⭐ ${process.env.BOT_NAME} started successfully as '${client.user.tag}'. Version: ${process.env.BOT_VERSION}`);
 
         // Set the client user's presence
         client.user.setPresence({ status: 'idle' });

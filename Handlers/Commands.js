@@ -5,16 +5,10 @@ const { Collection, REST, Routes } = require('discord.js');
 const log = require('../Addons/Logger');
 
 /**
- * Array of guild application interactions.
+ * Object with arrays of application interactions commands.
  * @use for registerGuildCmds().
  */
-const guildCmds = []; // Guild application interactions commands.
-
-/**
- * Array of global application interactions.
- * @use for registerGlobalCmds().
- */
-const globalCmds = []; // Global application interactions commands.
+const appCommands = { global: [], backend: [], laezaria: [] }; // Object with interaction commands arrays.
 
 /**
  * Loads application interaction command handler.
@@ -29,7 +23,7 @@ const loadAppCmds = (client) =>
 
         // Create a new table.
         const table = new AsciiTable('Application Interaction Commands');
-        table.setHeading('Status', 'Category', 'Name', 'File');
+        table.setHeading('Status', 'Guild', 'Name', 'File');
 
         // Application interaction collection.
         client.commands = new Collection();
@@ -54,7 +48,7 @@ const loadAppCmds = (client) =>
                     // Add table row for this command.
                     table.addRow(
                         slashCommand.enabled ? 'ENABLED' : 'DISABLED',
-                        slashCommand.category,
+                        slashCommand.guild,
                         slashCommand.data.name,
                         file.split('/').slice(-1).join('/')
                     );
@@ -71,15 +65,18 @@ const loadAppCmds = (client) =>
                     log.debug(`[LOAD COMMANDS] Loaded '${slashCommand.data.name}' application interaction command.`);
 
                     // Finally split slashCommands into separate categories.
-                    switch (slashCommand.category) {
+                    switch (slashCommand.guild) {
                         case 'GLOBAL':
-                            globalCmds.push(slashCommand.data.toJSON());
+                            appCommands.global.push(slashCommand.data.toJSON());
                             break;
-                        case 'GUILD':
-                            guildCmds.push(slashCommand.data.toJSON());
+                        case 'BACKEND':
+                            appCommands.backend.push(slashCommand.data.toJSON());
+                            break;
+                        case 'LAEZARIA':
+                            appCommands.laezaria.push(slashCommand.data.toJSON());
                             break;
                         default:
-                            reject(`Command '${slashCommand.data.name}' has unhandled category '${slashCommand.category}'!`);
+                            reject(`Command '${slashCommand.data.name}' has unhandled guild '${slashCommand.guild}'!`);
                             break;
                     }
                 } catch (error) {
@@ -104,26 +101,55 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_APP_TOKEN)
 /**
  * Refreshes guild interaction commands.
  * @param {Array} commands - An array of guild interaction commands to be registered.
+ * @param {String} guildID - String with the guild ID.
+ * @param {String} friendlyName - String with the name of the guild to easy recognition.
  * @returns {Promise} - A promise that resolves with a success message, or rejects with an error message.
- * @example await registerGuildCmds(cmds).then(function).catch(error);
+ * @example await registerGuildCmds(cmds, '1234567890', 'some club name').then(function).catch(error);
  */
-const registerGuildCmds = commands =>
-    new Promise((resolve, reject) => {
-        log.debug('[REGISTER GUILD INTERACTION COMMANDS] Started refreshing guild application interaction commands.');
+// const registerGuildCmds = async (commands, guildID, friendlyName) =>
+//     new Promise((resolve, reject) => {
+//         if (!commands || !guildID || !friendlyName) throw new Error('Missing parameters to register specific application guild commands.');
+//         log.debug(`[REGISTER GUILD COMMANDS] Started refreshing '${friendlyName}' specific application guild commands.`);
 
-        (async () => {
+//         (async () => {
+//             try {
+//                 await rest.put(
+//                     Routes.applicationGuildCommands(process.env.DISCORD_APP_ID, guildID),
+//                     { body: commands }
+//                 );
+
+//                 setTimeout(() => {
+//                     resolve(`[REGISTER GUILD COMMANDS] ✅ Successfully refreshed '${friendlyName}' specific application guild commands.`, commands);
+//                 }, 5000);
+
+//                 // resolve(`[REGISTER GUILD COMMANDS] ✅ Successfully refreshed '${friendlyName}' specific application guild commands.`, commands);
+//             } catch (err) {
+//                 reject(`[REGISTER GUILD COMMANDS] Error to refresh '${friendlyName}' specific application guild commands: ${err.message}`);
+//             }
+//         })();
+//     });
+
+
+async function registerGuildCmds(commands, guildID, friendlyName) {
+    return new Promise((resolve, reject) => {
+        if (!commands || !guildID || !friendlyName) throw new Error('Missing parameters to register specific application guild commands.');
+        log.debug(`[REGISTER GUILD COMMANDS] Started refreshing '${friendlyName}' specific application guild commands.`);
+
+        setTimeout(async () => {
+
             try {
                 await rest.put(
-                    Routes.applicationGuildCommands(process.env.DISCORD_APP_ID, process.env.SERVER_ID),
+                    Routes.applicationGuildCommands(process.env.DISCORD_APP_ID, guildID),
                     { body: commands }
                 );
 
-                resolve('✅ Successfully refreshed GUILD application interaction commands.', commands);
+                resolve(`[REGISTER GUILD COMMANDS] Successfully refreshed '${friendlyName}' specific application guild commands.`, commands);
             } catch (err) {
-                reject(`Error to refresh guild application interaction commands: ${err.message}`);
+                reject(`[REGISTER GUILD COMMANDS] Error to refresh '${friendlyName}' specific application guild commands: ${err.message}`);
             }
-        })();
+        }, 5000);
     });
+}
 
 
 /**
@@ -134,7 +160,7 @@ const registerGuildCmds = commands =>
 */
 const registerGlobalCmds = commands =>
     new Promise((resolve, reject) => {
-        log.debug('[REGISTER GLOBAL INTERACTION COMMANDS] Started refreshing global application interaction commands.');
+        log.debug('[REGISTER GLOBAL COMMANDS] Started refreshing global application commands.');
 
         (async () => {
             try {
@@ -143,12 +169,12 @@ const registerGlobalCmds = commands =>
                     { body: commands }
                 );
 
-                resolve('✅ Successfully refreshed GLOBAL application interaction commands.', commands);
+                resolve('[REGISTER GLOBAL COMMANDS] ✅ Successfully refreshed GLOBAL application commands.', commands);
             } catch (err) {
-                reject(`Error to refresh global application interaction commands: ${err.message}`);
+                reject(`[REGISTER GLOBAL COMMANDS] Error to refresh global application commands: ${err.message}`);
             }
         })();
     });
 
 
-module.exports = { loadAppCmds, registerGuildCmds, registerGlobalCmds, guildCmds, globalCmds };
+module.exports = { loadAppCmds, registerGuildCmds, registerGlobalCmds, appCommands };
