@@ -63,5 +63,5 @@ async function start() {
     }
 }
 
-// Start the application.
+// Run the application.
 start();
