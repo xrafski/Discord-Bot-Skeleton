@@ -40,7 +40,6 @@ async function start() {
         // eslint-disable-next-line no-console
         console.log(menuTable); // Ascii table with application selection menus loaded.
 
-
         // Register global interaction commands and then register guild interaction commands.
         await registerGlobalCmds(appCommands.global)
             .then(async regGlobCmdsRes => {
