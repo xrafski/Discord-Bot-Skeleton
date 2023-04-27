@@ -1,2 +1,2 @@
-# Discord-Bot-Skeleton
-Skeleton to build a discord bot on.
+# Discord-Bot
+Official Discord Bot for Trove Ethics Alliance
