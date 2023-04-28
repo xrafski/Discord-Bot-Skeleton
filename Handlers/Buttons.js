@@ -71,6 +71,8 @@ const loadAppButtons = (client) =>
         } catch (error) {
             reject(`Error loading application interaction button files: ${error.message}`);
         }
+
+        log.debug('🆗 [LOAD BUTTONS] Finished loading application interaction button handler.');
     });
 
 module.exports = { loadAppButtons };

@@ -71,6 +71,8 @@ const loadAppModals = (client) =>
         } catch (error) {
             reject(`Error loading application interaction modal files: ${error.message}`);
         }
+
+        log.debug('🆗 [LOAD MODALS] Started loading application interaction modal handler.');
     });
 
 module.exports = loadAppModals;
