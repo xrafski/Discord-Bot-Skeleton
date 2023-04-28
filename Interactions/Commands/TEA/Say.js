@@ -1,9 +1,11 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { PermissionFlagsBits } = require('discord-api-types/v9');
 const log = require('../../../Addons/Logger');
+const { GuildNames } = require('../../../Addons/GuildNames');
+const findEmoji = require('../../../Addons/findEmoji');
 module.exports = {
     enabled: false,
-    guild: 'BACKEND',
+    guild: GuildNames.TEA,
     data: new SlashCommandBuilder()
         .setName('say')
         .setDescription('Say something using the bot.')
@@ -21,7 +23,7 @@ module.exports = {
                 .setRequired(false)
         ),
 
-    async execute(client, interaction, args) {
+    async execute(interaction, args) {
         const { user, guild } = interaction;
 
         // Log who used the command.
@@ -29,7 +31,7 @@ module.exports = {
 
         try {
             // Create reply to defer the command execution.
-            const reply = await interaction.reply({ content: 'Sending message...', ephemeral: true });
+            const reply = await interaction.reply({ content: `${findEmoji(interaction.client, 'loading')} Sending message...`, ephemeral: true });
 
             if (!interaction.channel) {
                 throw new Error('Interaction channel is undefined.');
@@ -69,7 +71,7 @@ module.exports = {
             // Send an error message to the user about missing permissions.
             if (error?.message === 'Missing Permissions') {
                 await interaction.editReply({
-                    content: `🥶 Something went wrong with this interaction.\nMake sure ${client.user} has 'Send Messages' and/or 'Attach Files' permission to perform this action.`,
+                    content: `🥶 Something went wrong with this interaction.\nMake sure ${interaction.client.user} has 'Send Messages' and/or 'Attach Files' permission to perform this action.`,
                     ephemeral: true
                 }).catch((editError) => log.bug(`[/SAY] Error editing interaction reply: ${editError}`));
             }

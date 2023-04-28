@@ -9,13 +9,11 @@ const errorHandler = () =>
 
         // Catch all unhandled rejection messages
         process.on('unhandledRejection', err => {
-            const errorLocation = err.stack.split('\n')[1].split('/').slice(-1)[0].trim();
-            log.warn(`[App uncaughtException at ${errorLocation}]\n` + err.stack);
+            log.warn('[App uncaughtException]', err);
         });
 
         process.on('uncaughtException', err => {
-            const errorLocation = err.stack.split('\n')[1].split('/').slice(-1)[0].trim();
-            log.bug(`[App uncaughtException at ${errorLocation}]\n` + err.stack);
+            log.bug('[App uncaughtException]', err);
         });
 
         // Handle user exit the application.

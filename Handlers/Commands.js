@@ -3,12 +3,14 @@ const path = require('path');
 const AsciiTable = require('ascii-table');
 const { Collection, REST, Routes } = require('discord.js');
 const log = require('../Addons/Logger');
+const { GuildNames } = require('../Addons/GuildNames');
 
 /**
  * Object with arrays of application interactions commands.
  * @use for registerGuildCmds().
  */
-const appCommands = { global: [], backend: [], laezaria: [] }; // Object with interaction commands arrays.
+// const appCommands = { global: [], backend: [], laezaria: [] }; // Object with interaction commands arrays.
+const appCommands = {}; // Object with interaction commands arrays.
 
 /**
  * Loads application interaction command handler.
@@ -66,14 +68,16 @@ const loadAppCmds = (client) =>
 
                     // Finally split slashCommands into separate categories.
                     switch (slashCommand.guild) {
-                        case 'GLOBAL':
-                            appCommands.global.push(slashCommand.data.toJSON());
+                        case GuildNames.GLOBAL:
+                            // appCommands.global.push(slashCommand.data.toJSON());
+                            appCommands.global = [slashCommand.data.toJSON()];
                             break;
-                        case 'BACKEND':
-                            appCommands.backend.push(slashCommand.data.toJSON());
+                        case GuildNames.TEA:
+                            // appCommands.TEA.push(slashCommand.data.toJSON());
+                            appCommands.TEA = [slashCommand.data.toJSON()];
                             break;
-                        case 'LAEZARIA':
-                            appCommands.laezaria.push(slashCommand.data.toJSON());
+                        case GuildNames.template:
+                            appCommands.template = [slashCommand.data.toJSON()];
                             break;
                         default:
                             reject(`Command '${slashCommand.data.name}' has unhandled guild '${slashCommand.guild}'!`);
@@ -108,14 +112,14 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_APP_TOKEN)
  */
 async function registerGuildCmds(commands, guildID, friendlyName) {
     return new Promise((resolve, reject) => {
-        if (!commands || !guildID || !friendlyName) throw new Error('Missing parameters to register specific application guild commands.');
+        if (!guildID || !friendlyName) throw new Error('Missing parameters to register specific application guild commands.');
         log.debug(`[REGISTER GUILD COMMANDS] Started refreshing '${friendlyName}' specific application guild commands.`);
 
         setTimeout(async () => {
             try {
                 await rest.put(
                     Routes.applicationGuildCommands(process.env.DISCORD_APP_ID, guildID),
-                    { body: commands }
+                    { body: commands ? commands : [] }
                 );
 
                 resolve(`[REGISTER GUILD COMMANDS] Successfully refreshed '${friendlyName}' specific application guild commands.`, commands);
@@ -141,7 +145,7 @@ const registerGlobalCmds = commands =>
             try {
                 await rest.put(
                     Routes.applicationCommands(process.env.DISCORD_APP_ID),
-                    { body: commands }
+                    { body: commands ? commands : [] }
                 );
 
                 resolve('[REGISTER GLOBAL COMMANDS] ✅ Successfully refreshed GLOBAL application commands.', commands);
