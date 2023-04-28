@@ -33,7 +33,7 @@ module.exports = {
             await interaction.editReply({
                 content: '🥶 Something went wrong with this interaction. Please try again later.',
                 ephemeral: true
-            }).catch((editError) => log.bug(`[/TEMPLATE] Error editing interaction reply: ${editError}`));
+            }).catch((editError) => log.bug('[/TEMPLATE] Error editing interaction reply:', editError));
         }
     },
 };
