@@ -24,7 +24,7 @@ const loadAppButtons = (client) =>
 
         try {
             // Load application interaction button files.
-            const appButtonFiles = await glob('Interactions/Buttons/*.js');
+            const appButtonFiles = await glob('Interactions/Buttons/**/*.js');
 
             for (const file of appButtonFiles) {
                 try {

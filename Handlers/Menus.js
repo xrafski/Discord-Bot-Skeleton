@@ -24,7 +24,7 @@ const loadAppMenus = (client) =>
 
         try {
             // Load application interaction menus files.
-            const appMenuFiles = await glob('Interactions/Menus/*.js');
+            const appMenuFiles = await glob('Interactions/Menus/**/*.js');
 
             for (const file of appMenuFiles) {
                 try {

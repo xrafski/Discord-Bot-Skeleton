@@ -24,7 +24,7 @@ const loadAppModals = (client) =>
 
         try {
             // Load application interaction modals files.
-            const appModalFiles = await glob('Interactions/Modals/*.js');
+            const appModalFiles = await glob('Interactions/Modals/**/*.js');
 
             for (const file of appModalFiles) {
                 try {
