@@ -25,8 +25,8 @@ const errorHandler = () =>
             log.warn('[App EXIT] About to exit with code ' + code);
         });
 
-        log.debug('[ERROR HANDLER] Finished resolving application error handler.');
         resolve('[ERROR HANDLER] ✅ Successfully loaded application error handler.');
+        log.debug('🆗 [ERROR HANDLER] Finished resolving application error handler.');
     });
 
 module.exports = { errorHandler };

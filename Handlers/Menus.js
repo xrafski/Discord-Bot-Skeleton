@@ -71,6 +71,8 @@ const loadAppMenus = (client) =>
         } catch (error) {
             reject(`Error loading application interaction selection menu files: ${error.message}`);
         }
+
+        log.debug('🆗 [LOAD MENUS] Finished loading application interaction selection menu handler.');
     });
 
 module.exports = loadAppMenus;

@@ -27,12 +27,23 @@ const loadAppCmds = (client) =>
         const table = new AsciiTable('Application Interaction Commands');
         table.setHeading('Status', 'Guild', 'Name', 'File');
 
+        function tableAddRow(slashCommand, file) {
+            // Add table row for this command.
+            table.addRow(
+                slashCommand.enabled ? 'ENABLED' : 'DISABLED',
+                slashCommand.guild,
+                slashCommand.data.name,
+                file.split('/').slice(-1).join('/')
+            );
+        }
+
         // Application interaction collection.
         client.commands = new Collection();
 
         try {
             // Load application interaction slash commands files.
             const appCmdFiles = await glob('Interactions/Commands/**/*.js');
+
 
             for (const file of appCmdFiles) {
                 try {
@@ -47,14 +58,6 @@ const loadAppCmds = (client) =>
                         continue;
                     }
 
-                    // Add table row for this command.
-                    table.addRow(
-                        slashCommand.enabled ? 'ENABLED' : 'DISABLED',
-                        slashCommand.guild,
-                        slashCommand.data.name,
-                        file.split('/').slice(-1).join('/')
-                    );
-
                     // Check if command is disabled.
                     if (!slashCommand.enabled) {
                         continue;
@@ -68,19 +71,30 @@ const loadAppCmds = (client) =>
 
                     // Finally split slashCommands into separate categories.
                     switch (slashCommand.guild) {
-                        case GuildNames.GLOBAL:
-                            // appCommands.global.push(slashCommand.data.toJSON());
+                        case GuildNames.GLOBAL: {
                             appCommands.global = [slashCommand.data.toJSON()];
+                            tableAddRow(slashCommand, file);
                             break;
-                        case GuildNames.TEA:
-                            // appCommands.TEA.push(slashCommand.data.toJSON());
+                        }
+                        case GuildNames.TEA: {
                             appCommands.TEA = [slashCommand.data.toJSON()];
+                            tableAddRow(slashCommand, file);
                             break;
-                        case GuildNames.template:
+                        }
+                        case GuildNames.template: {
                             appCommands.template = [slashCommand.data.toJSON()];
+                            tableAddRow(slashCommand, file);
                             break;
+                        }
                         default:
-                            reject(`Command '${slashCommand.data.name}' has unhandled guild '${slashCommand.guild}'!`);
+                            log.warn(`Command '${slashCommand.data.name}' has unhandled guild parameter set:`, `'${slashCommand?.guild}' and is not loaded❗`);
+                            // Add table row for this invalid command.
+                            table.addRow(
+                                'INVALID',
+                                slashCommand?.guild,
+                                slashCommand.data.name,
+                                file.split('/').slice(-1).join('/')
+                            );
                             break;
                     }
                 } catch (error) {
@@ -97,6 +111,8 @@ const loadAppCmds = (client) =>
         } catch (error) {
             reject(`Error loading application interaction command files: ${error.message}`);
         }
+
+        log.debug('🆗 [LOAD COMMANDS] Finished loading application interaction command handler.');
     });
 
 // Create rest variable for application slash command registry.

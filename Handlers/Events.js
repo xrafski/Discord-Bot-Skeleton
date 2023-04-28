@@ -39,8 +39,8 @@ const eventHandler = client =>
 			reject(`Error loading application event files: ${error.message}`);
 		}
 
-		log.debug('[EVENT HANDLER] Finished resolving application event handler.');
 		resolve('[EVENT HANDLER] ✅ Successfully loaded application event handler.');
+		log.debug('🆗 [EVENT HANDLER] Finished resolving application event handler.');
 	});
 
 
