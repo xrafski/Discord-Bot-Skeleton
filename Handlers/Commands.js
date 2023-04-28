@@ -9,7 +9,6 @@ const { GuildNames } = require('../Addons/GuildNames');
  * Object with arrays of application interactions commands.
  * @use for registerGuildCmds().
  */
-// const appCommands = { global: [], backend: [], laezaria: [] }; // Object with interaction commands arrays.
 const appCommands = {}; // Object with interaction commands arrays.
 
 /**
@@ -81,8 +80,8 @@ const loadAppCmds = (client) =>
                             tableAddRow(slashCommand, file);
                             break;
                         }
-                        case GuildNames.template: {
-                            appCommands.template = [slashCommand.data.toJSON()];
+                        case GuildNames.TEST: {
+                            appCommands.TEST = [slashCommand.data.toJSON()];
                             tableAddRow(slashCommand, file);
                             break;
                         }
@@ -131,7 +130,7 @@ async function registerGuildCmds(commands, guildID, friendlyName) {
         if (!guildID || !friendlyName) throw new Error('Missing parameters to register specific application guild commands.');
         log.debug(`[REGISTER GUILD COMMANDS] Started refreshing '${friendlyName}' specific application guild commands.`);
 
-        setTimeout(async () => {
+        setTimeout(async () => { // 5 seconds timeout for each command registry API request.
             try {
                 await rest.put(
                     Routes.applicationGuildCommands(process.env.DISCORD_APP_ID, guildID),
