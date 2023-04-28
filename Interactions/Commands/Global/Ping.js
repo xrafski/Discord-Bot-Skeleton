@@ -8,7 +8,7 @@ const PING_THRESHOLD = [130, 250];
 const STATUS_EMOJIS = ['✨', '🆗', '❗'];
 
 module.exports = {
-	enabled: true,
+	enabled: false,
 	guild: GuildNames.GLOBAL,
 	data: new SlashCommandBuilder()
 		.setName('ping')
