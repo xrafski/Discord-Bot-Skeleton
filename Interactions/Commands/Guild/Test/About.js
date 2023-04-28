@@ -5,10 +5,10 @@ const findEmoji = require('../../../../Addons/findEmoji');
 
 module.exports = {
     enabled: true,
-    guild: GuildNames.laezaria,
+    guild: GuildNames.TEST,
     data: new SlashCommandBuilder()
         .setName('about')
-        .setDescription('About laezaria club'),
+        .setDescription('About test club'),
 
     async execute(interaction) {
         const { user, guild } = interaction;
@@ -21,7 +21,7 @@ module.exports = {
             const reply = await interaction.reply({ content: `${findEmoji(interaction.client, 'loading')} Preparing reseponse...`, ephemeral: true });
 
             // Edit the reply to indicate success.
-            await reply.edit({ content: '**Laezaria** has been founded in 2015 by @Trovegasm and has been one of the most popular high-end / end-game clubs, peaking after the Mantle of Power update. We have always been an active and friendly community.' });
+            await reply.edit({ content: `${findEmoji(interaction.client, 'loading')} This is a test command for a test development server!` });
         } catch (error) {
             log.bug('[/ABOUT] Interaction error:', error);
 
