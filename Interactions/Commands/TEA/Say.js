@@ -73,14 +73,14 @@ module.exports = {
                 await interaction.editReply({
                     content: `🥶 Something went wrong with this interaction.\nMake sure ${interaction.client.user} has 'Send Messages' and/or 'Attach Files' permission to perform this action.`,
                     ephemeral: true
-                }).catch((editError) => log.bug(`[/SAY] Error editing interaction reply: ${editError}`));
+                }).catch((editError) => log.bug('[/SAY] Error editing interaction reply:', editError));
             }
 
             // Default error message to the user.
             await interaction.editReply({
                 content: '🥶 Something went wrong with this interaction. Please try again later.',
                 ephemeral: true
-            }).catch((editError) => log.bug(`[/SAY] Error editing interaction reply: ${editError}`));
+            }).catch((editError) => log.bug('[/SAY] Error editing interaction reply:', editError));
         }
     },
 };

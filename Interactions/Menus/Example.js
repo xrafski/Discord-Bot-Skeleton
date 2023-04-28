@@ -47,7 +47,7 @@ async function addExampleMenu(interaction, message) {
         await interaction.reply({
             content: '🥶 Something went wrong with this interaction. Please try again later.',
             ephemeral: true
-        }).catch((editError) => log.bug(`[exampleMenu] Error sending interaction reply: ${editError}`));
+        }).catch((editError) => log.bug('[exampleMenu] Error sending interaction reply:', editError));
     }
 }
 
@@ -69,7 +69,7 @@ module.exports = {
             await interaction.reply({
                 content: '🥶 Something went wrong with this interaction. Please try again later.',
                 ephemeral: true
-            }).catch((responseError) => log.bug(`[exampleMenu] Error editing interaction reply: ${responseError}`));
+            }).catch((responseError) => log.bug('[exampleMenu] Error editing interaction reply:', responseError));
         }
     }
 };

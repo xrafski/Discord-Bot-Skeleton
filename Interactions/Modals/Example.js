@@ -53,7 +53,7 @@ async function showExampleModal(interaction) {
         await interaction.reply({
             content: '🥶 Something went wrong with this interaction. Please try again later.',
             ephemeral: true
-        }).catch((editError) => log.bug(`[exampleModal] Error sending interaction reply: ${editError}`));
+        }).catch((editError) => log.bug('[exampleModal] Error sending interaction reply:', editError));
     }
 }
 
@@ -73,7 +73,7 @@ module.exports = {
 
         } catch (error) {
             // Catch any potential errors.
-            log.bug('[exampleModal] Error to run this modal.', error);
+            log.bug('[exampleModal] Error to run this modal:', error);
         }
     }
 };
