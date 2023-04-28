@@ -76,8 +76,8 @@ const loadAppCmds = (client) =>
                             // appCommands.TEA.push(slashCommand.data.toJSON());
                             appCommands.TEA = [slashCommand.data.toJSON()];
                             break;
-                        case GuildNames.template:
-                            appCommands.template = [slashCommand.data.toJSON()];
+                        case GuildNames.laezaria:
+                            appCommands.laezaria = [slashCommand.data.toJSON()];
                             break;
                         default:
                             reject(`Command '${slashCommand.data.name}' has unhandled guild '${slashCommand.guild}'!`);

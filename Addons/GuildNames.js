@@ -4,5 +4,5 @@
 module.exports.GuildNames = {
     GLOBAL: 'GLOBAL', // Global command keyword.
     TEA: 'TEA', // TEA's Backend command keyword.
-    template: 'template', // Example guild name.
+    laezaria: 'laezaria', // Lazaria guild.
 };
