@@ -1,19 +1,21 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const log = require('../../../Addons/Logger');
+const { GuildNames } = require('../../../Addons/GuildNames');
+const findEmoji = require('../../../Addons/findEmoji');
 
 // Constants
 const PING_THRESHOLD = [130, 250];
 const STATUS_EMOJIS = ['✨', '🆗', '❗'];
 
 module.exports = {
-	enabled: false,
-	guild: 'GLOBAL',
+	enabled: true,
+	guild: GuildNames.GLOBAL,
 	data: new SlashCommandBuilder()
 		.setName('ping')
 		.setDescription('Returns websocket connection ping.')
 		.setDMPermission(false),
 
-	async execute(client, interaction) {
+	async execute(interaction) {
 		const { user, guild } = interaction;
 
 		// Log who used the command.
@@ -21,13 +23,13 @@ module.exports = {
 
 		try {
 			// Send a reply to the user.
-			const reply = await interaction.reply({ content: 'Checking ping...', ephemeral: true });
+			const reply = await interaction.reply({ content: `${findEmoji(interaction.client, 'loading')} Checking ping...`, ephemeral: true });
 
-			// Fake 2s delay to make it appear as if the bot is doing something 😂
+			// Fake 2s delay to appear as if the bot is doing something 😂
 			await new Promise((resolve) => setTimeout(resolve, 2000));
 
 			// Get websocket ping value.
-			const ping = Math.round(client.ws.ping);
+			const ping = Math.round(interaction.client.ws.ping);
 
 			// Find the appropriate status based on the ping.
 			const statusIndex = PING_THRESHOLD.findIndex((threshold) => ping < threshold);

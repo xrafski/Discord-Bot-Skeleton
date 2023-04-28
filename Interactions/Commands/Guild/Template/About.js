@@ -1,14 +1,16 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const { GuildNames } = require('../../../../Addons/GuildNames');
 const log = require('../../../../Addons/Logger');
+const findEmoji = require('../../../../Addons/findEmoji');
 
 module.exports = {
-    enabled: false,
-    guild: 'LAEZARIA',
+    enabled: true,
+    guild: GuildNames.template,
     data: new SlashCommandBuilder()
         .setName('about')
-        .setDescription('About laezaria'),
+        .setDescription('About template club'),
 
-    async execute(client, interaction) {
+    async execute(interaction) {
         const { user, guild } = interaction;
 
         // Log who used the command.
@@ -16,11 +18,10 @@ module.exports = {
 
         try {
             // Create reply to defer the command execution.
-            const reply = await interaction.reply({ content: 'Preparing reseponse...', ephemeral: true });
-
+            const reply = await interaction.reply({ content: `${findEmoji(interaction.client, 'loading')} Preparing reseponse...`, ephemeral: true });
 
             // Edit the reply to indicate success.
-            await reply.edit({ content: '**Laezaria** has been founded in 2015 by @Trovegasm and has been one of the most popular high-end / end-game clubs, peaking after the Mantle of Power update. We have always been an active and friendly community.' });
+            await reply.edit({ content: '**Template** example information command' });
         } catch (error) {
             log.bug('[/ABOUT] Interaction error:', error);
 

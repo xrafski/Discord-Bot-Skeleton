@@ -66,7 +66,7 @@ module.exports = {
                 }
 
                 // Execute the command.
-                return command.execute(client, interaction, args);
+                return command.execute(interaction, args);
             } catch (error) {
                 log.bug('Error with interactionCreate event', error);
                 return interaction.reply({ content: '🐛 An error occurred while executing the command!', ephemeral: true }).catch(err => log.bug('Error to send interaction response', err));
@@ -87,7 +87,7 @@ module.exports = {
                 }
 
                 // Execute the command.
-                return button.execute(client, interaction);
+                return button.execute(interaction);
             } catch (error) {
                 log.bug('Error with interactionCreate event', error);
                 return interaction.reply({ content: '🐛 An error occurred while executing the button!', ephemeral: true })
@@ -117,7 +117,7 @@ module.exports = {
                 }
 
                 // Execute the command.
-                return modal.execute(client, interaction, args);
+                return modal.execute(interaction, args);
             } catch (error) {
                 log.bug('Error with interactionCreate event', error);
                 return interaction.reply({ content: '🐛 An error occurred while executing the modal!', ephemeral: true })
@@ -147,7 +147,7 @@ module.exports = {
                 }
 
                 // Execute the command.
-                return selection.execute(client, interaction, args);
+                return selection.execute(interaction, args);
             } catch (error) {
                 log.bug('Error with interactionCreate event', error);
                 return interaction.reply({ content: '🐛 An error occurred while executing the selection menu!', ephemeral: true })
