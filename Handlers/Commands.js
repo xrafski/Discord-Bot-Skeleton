@@ -127,11 +127,11 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_APP_TOKEN)
  */
 async function registerGuildCmds(commands, guildID, friendlyName) {
     return new Promise((resolve, reject) => {
-        if (!guildID || !friendlyName) throw new Error('Missing parameters to register specific application guild commands.');
         log.debug(`[REGISTER GUILD COMMANDS] Started refreshing '${friendlyName}' specific application guild commands.`);
 
         setTimeout(async () => { // 5 seconds timeout for each command registry API request.
             try {
+                if (!guildID || !friendlyName) throw new Error('Missing required parameters to register specific application guild commands.');
                 await rest.put(
                     Routes.applicationGuildCommands(process.env.DISCORD_APP_ID, guildID),
                     { body: commands ? commands : [] }
