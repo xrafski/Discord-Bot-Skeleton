@@ -38,7 +38,7 @@ module.exports = {
     name: 'exampleButton',
     exampleButtonBuilder, // The example button builder.
     addExampleButton, // Function to add a button component to a provided message object. Used on different files as: addExampleButton(interaction, message)
-    async execute(client, interaction) {
+    async execute(interaction) {
 
         try {
             await interaction.reply({ content: 'You clicked the example button!\n**Now with additional logic you can do something with it!**', ephemeral: true });

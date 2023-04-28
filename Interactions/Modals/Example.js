@@ -62,7 +62,7 @@ module.exports = {
     enabled: false,
     name: 'exampleModal',
     showExampleModal, // Function to show modal to the user. Used on different files as: showExampleModal(interaction)
-    async execute(client, interaction, args) { // That handles the interation submit response.
+    async execute(interaction, args) { // That handles the interation submit response.
 
         try {
             // Log user arguments to the console.

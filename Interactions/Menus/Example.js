@@ -56,7 +56,7 @@ module.exports = {
     enabled: false,
     name: 'exampleMenu',
     addExampleMenu, // Function to add selection menu component to a provided message object. Used on different files as: addExampleMenu(interaction, message)
-    async execute(client, interaction, args) { // That handles the interation submit response.
+    async execute(interaction, args) { // That handles the interation submit response.
 
         try {
             // Send a message confirming that the form has been submitted successfully.
