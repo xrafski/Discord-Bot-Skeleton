@@ -87,7 +87,7 @@ const loadAppCmds = (client) =>
                             break;
                         }
                         default:
-                            log.warn(`Command '${slashCommand.data.name}' has unhandled guild parameter set:`, `'${slashCommand?.guild}' and is not loaded❗`);
+                            log.warn(`Command '${slashCommand.data.name}' has unhandled guild parameter set:`, `'${slashCommand?.guild}' and is not loaded`);
                             // Add table row for this invalid command.
                             table.addRow(
                                 'INVALID',
