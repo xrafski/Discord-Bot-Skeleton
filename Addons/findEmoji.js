@@ -16,4 +16,13 @@ function findEmoji(client, emojiName) {
     }
 }
 
-module.exports = findEmoji;
+const emojiList = {
+    loading: 'loading', // Animated loading emoji.
+    approve: 'approve', // Emoji for approved things.
+    reject: 'reject', // Emoji for rejected things.
+};
+
+module.exports = {
+    findEmoji,
+    emojiList
+};
