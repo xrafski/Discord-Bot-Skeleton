@@ -72,7 +72,7 @@ const loadAppModals = (client) =>
             reject(`Error loading application interaction modal files: ${error.message}`);
         }
 
-        log.debug('🆗 [LOAD MODALS] Started loading application interaction modal handler.');
+        log.debug('🆗 [LOAD MODALS] Finished loading application interaction modal handler.');
     });
 
 module.exports = loadAppModals;
