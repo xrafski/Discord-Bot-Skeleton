@@ -137,7 +137,7 @@ async function registerGuildCmds(commands, guildID, friendlyName) {
                     { body: commands ? commands : [] }
                 );
 
-                resolve(`[REGISTER GUILD COMMANDS] Successfully refreshed '${friendlyName}' specific application guild commands.`, commands);
+                resolve(`[REGISTER GUILD COMMANDS] ✅ Successfully refreshed '${friendlyName}' specific application guild commands.`, commands);
             } catch (err) {
                 reject(`[REGISTER GUILD COMMANDS] Error to refresh '${friendlyName}' specific application guild commands: ${err.message}`);
             }
