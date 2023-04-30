@@ -8,7 +8,7 @@ const log = {
     info: function (...args) { console.info(`[${moment().utc().format(format)}] [INFO]`, ...args); },
     debug: process.env.BOT_DEBUG === 'true' ? function (...args) { console.debug(`[${moment().utc().format(format)}] ⭕ [DEBUG]`, ...args); } : () => { },
     warn: function (...args) { console.warn(`[${moment().utc().format(format)}] [WARN]`, ...args); },
-    bug: function (...args) { console.error(`[${moment().utc().format(format)}] [🐛 BUG]`, ...args); },
+    bug: function (...args) { console.error(`[${moment().utc().format(format)}] 🐛 [BUG]`, ...args); },
 };
 
 module.exports = log;
