@@ -77,16 +77,16 @@ module.exports = {
         if (interaction.isButton()) {
 
             try {
-                // Assing variable to a command.
+                // Assing variable to a button.
                 const button = client.buttons.get(interaction.customId);
 
-                // Check if command exist.
+                // Check if button exist.
                 if (!client.buttons.get(interaction.customId)) {
                     log.bug('Non supported interaction button used:', interaction.customId);
                     return interaction.reply({ content: '🐛 It seems that this button is not valid and cannot be executed.\nTry again later...', ephemeral: true });
                 }
 
-                // Execute the command.
+                // Execute the button.
                 return button.execute(interaction);
             } catch (error) {
                 log.bug('Error with interactionCreate event', error);
@@ -99,10 +99,10 @@ module.exports = {
         if (interaction.isModalSubmit()) {
 
             try {
-                // Assing variable to a command.
+                // Assing variable to a modal.
                 const modal = client.modals.get(interaction.customId);
 
-                // Check if command exist.
+                // Check if modal exist.
                 if (!modal) {
                     log.bug('Non supported interaction modal used:', interaction.customId);
                     return interaction.reply({ content: '🐛 It seems that this modal is not valid and cannot be executed.\nTry again later...', ephemeral: true });
@@ -116,7 +116,7 @@ module.exports = {
                     args.push(iterator.components[0].value);
                 }
 
-                // Execute the command.
+                // Execute the modal.
                 return modal.execute(interaction, args);
             } catch (error) {
                 log.bug('Error with interactionCreate event', error);
@@ -129,10 +129,10 @@ module.exports = {
         if (interaction.isStringSelectMenu()) {
 
             try {
-                // Assing variable to a command.
+                // Assing variable to a selection.
                 const selection = client.menus.get(interaction.customId);
 
-                // Check if command exist.
+                // Check if selection exist.
                 if (!selection) {
                     log.bug('Non supported interaction selection menu used:', interaction.customId);
                     return interaction.reply({ content: '🐛 It seems that this selection menu is not valid and cannot be executed.\nTry again later...', ephemeral: true });
@@ -146,7 +146,7 @@ module.exports = {
                     args.push(option);
                 }
 
-                // Execute the command.
+                // Execute the selection.
                 return selection.execute(interaction, args);
             } catch (error) {
                 log.bug('Error with interactionCreate event', error);
