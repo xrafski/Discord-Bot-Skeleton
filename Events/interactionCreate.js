@@ -1,4 +1,4 @@
-const { Events } = require('discord.js');
+const { Events, ApplicationCommandOptionType } = require('discord.js');
 const log = require('../Addons/Logger');
 
 module.exports = {
@@ -25,7 +25,7 @@ module.exports = {
                     switch (option.type) {
 
                         // When command has a group option.
-                        case 'SUB_COMMAND_GROUP': {
+                        case ApplicationCommandOptionType.SubcommandGroup: {
 
                             // Get group name
                             if (option.name) args.push(option.name);
@@ -42,7 +42,7 @@ module.exports = {
                         }
 
                         // When command has a sub command option.
-                        case 'SUB_COMMAND': {
+                        case ApplicationCommandOptionType.Subcommand: {
 
                             // Get sub command name
                             if (option.name) args.push(option.name);
