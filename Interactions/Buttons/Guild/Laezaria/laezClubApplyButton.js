@@ -1,6 +1,10 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const log = require('../../../../Addons/Logger');
 const { showLaezClubApplyModal } = require('../../../Modals/Guild/Laezaria/laezClubApplyModal');
+const { findEmoji, emojiList } = require('../../../../Addons/findEmoji');
+
+// Variables
+const laezariaMemberRoleID = '1099703236983791698';
 
 const laezClubApplyButtonBuilder = new ButtonBuilder()
     .setCustomId('laezClubApplyButton')
@@ -45,20 +49,14 @@ module.exports = {
     async execute(interaction) { // Logic when user interact with this button.
 
         try {
-            // FIX IT (NOT FINISHED)
-            // await interaction.reply({ content: 'You clicked the **laezClubApplyButton**!\n*Now with additional logic you can do something with it!*', ephemeral: true });
-            // const guild = interaction.guild
-            // const member = await guild.members.fetch(interaction.user.id)
+            // Check if interaction user is already a club member.
+            const member = await interaction.guild.members.fetch(interaction.user.id);
+            if (member.roles.cache.has(laezariaMemberRoleID)) {
+                return interaction.reply({ content: `${findEmoji(interaction.client, emojiList.verify)} You are already a club member of **Laezaria**!`, ephemeral: true });
+            }
 
-            // if (member.roles.cache.has(laezmemberRole)) {
-
-            //     interaction.reply({ content: "You are already a Club Member of Laezaria", ephemeral: true })
-            //     return;
-            // }
-
-            showLaezClubApplyModal(interaction); // Dislay the laezaria club application modal to the user.
-
-
+            // Dislay the laezaria club application modal to the user.
+            showLaezClubApplyModal(interaction);
 
         } catch (error) {
             log.bug('[laezClubApplyButton] Interaction button error', error);
