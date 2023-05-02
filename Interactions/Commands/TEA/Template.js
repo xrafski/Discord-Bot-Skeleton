@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { PermissionFlagsBits } = require('discord-api-types/v9');
 const { GuildNames } = require('../../../Addons/GuildNames');
 const log = require('../../../Addons/Logger');
-const findEmoji = require('../../../Addons/findEmoji');
+const { findEmoji } = require('../../../Addons/findEmoji');
 
 module.exports = {
     enabled: false,
