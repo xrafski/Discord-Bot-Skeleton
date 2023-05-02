@@ -18,8 +18,9 @@ function findEmoji(client, emojiName) {
 
 const emojiList = {
     loading: 'loading', // Animated loading emoji.
-    approve: 'approve', // Emoji for approved things.
-    reject: 'reject', // Emoji for rejected things.
+    approve: 'approve', // Approved things.
+    reject: 'reject', // Rejected things.
+    verify: 'verified', // To mention something that is verified.
 };
 
 module.exports = {
