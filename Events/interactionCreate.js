@@ -62,7 +62,6 @@ module.exports = {
                             break;
                         }
                     }
-
                 }
 
                 // Execute the command.
