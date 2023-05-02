@@ -141,7 +141,7 @@ async function registerGuildCmds(commands, guildID, friendlyName) {
             } catch (err) {
                 reject(`[REGISTER GUILD COMMANDS] Error to refresh '${friendlyName}' specific application guild commands: ${err.message}`);
             }
-        }, 5000);
+        }, 2000);
     });
 }
 
