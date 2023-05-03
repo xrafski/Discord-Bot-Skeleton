@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const log = require('../../../Addons/Logger');
 const { GuildNames } = require('../../../Addons/GuildNames');
-const findEmoji = require('../../../Addons/findEmoji');
+const { findEmoji } = require('../../../Addons/findEmoji');
 
 // Constants
 const PING_THRESHOLD = [130, 250];
