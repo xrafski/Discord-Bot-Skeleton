@@ -1,7 +1,7 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const log = require('../../Addons/Logger');
 
-const exampleButtonBuilder = new ButtonBuilder()
+const builder = new ButtonBuilder()
     .setCustomId('exampleButton')
     .setLabel('Click me!')
     .setStyle(ButtonStyle.Danger);
@@ -34,9 +34,9 @@ async function addExampleButton(interaction) {
 }
 
 module.exports = {
-    enabled: false,
+    enabled: true,
     name: 'exampleButton',
-    exampleButtonBuilder, // The example button builder.
+    builder, // The example button builder.
     addExampleButton, // Function to add a button component to a provided message object. Used on different files as: addExampleButton(interaction, message)
     async execute(interaction) {
 
