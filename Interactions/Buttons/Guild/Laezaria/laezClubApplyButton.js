@@ -27,7 +27,7 @@ async function addlaezClubApplyButton(interaction) {
             );
 
         // Add component to existing message.
-        await interaction.channel.send({ content: '', components: [row] });
+        await interaction.channel.send({ components: [row] });
 
     } catch (error) {
         // Catch any potential errors.
