@@ -24,7 +24,7 @@ async function addlaezClubApplyRejectButton(interaction) {
             );
 
         // Send a message with the button component.
-        await interaction.channel.send({ content: '', components: [row] });
+        await interaction.channel.send({ components: [row] });
 
     } catch (error) { // Catch any potential errors.
         log.bug('[laezClubApplyRejectButton] Interaction button error:', error);
