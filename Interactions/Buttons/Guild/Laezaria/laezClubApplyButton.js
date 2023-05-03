@@ -6,9 +6,10 @@ const { findEmoji, emojiList } = require('../../../../Addons/findEmoji');
 // Variables
 const laezariaMemberRoleID = '1099703236983791698';
 
-const laezClubApplyButtonBuilder = new ButtonBuilder()
+const builder = new ButtonBuilder()
     .setCustomId('laezClubApplyButton')
     .setLabel('Apply to the club!')
+    .setEmoji('📝')
     .setStyle(ButtonStyle.Primary);
 
 /**
@@ -23,7 +24,7 @@ async function addlaezClubApplyButton(interaction) {
     try {
         const row = new ActionRowBuilder()
             .addComponents(
-                laezClubApplyButtonBuilder
+                builder
             );
 
         // Add component to existing message.
@@ -44,7 +45,7 @@ async function addlaezClubApplyButton(interaction) {
 module.exports = {
     enabled: true,
     name: 'laezClubApplyButton',
-    laezClubApplyButtonBuilder,
+    builder,
     addlaezClubApplyButton,
     async execute(interaction) { // Logic when user interact with this button.
 
