@@ -41,7 +41,7 @@ async function start() {
         console.log(menuTable); // Ascii table with application selection menus loaded.
 
         // Register global interaction commands and then register guild interaction commands.
-        await registerGlobalCmds(appCommands.global)
+        await registerGlobalCmds(appCommands.GLOBAL)
             .then(async regGlobCmdsRes => {
                 log.info(regGlobCmdsRes); // Log global commands registry response.
 

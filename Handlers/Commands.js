@@ -9,7 +9,11 @@ const { GuildNames } = require('../Addons/GuildNames');
  * Object with arrays of application interactions commands.
  * @use for registerGuildCmds().
  */
-const appCommands = {}; // Object with interaction commands arrays.
+const appCommands = {
+    GLOBAL: [],
+    TEA: [],
+    TEST: []
+}; // Object with interaction commands arrays.
 
 /**
  * Loads application interaction command handler.
@@ -71,17 +75,17 @@ const loadAppCmds = (client) =>
                     // Finally split slashCommands into separate categories.
                     switch (slashCommand.guild) {
                         case GuildNames.GLOBAL: {
-                            appCommands.global = [slashCommand.data.toJSON()];
+                            appCommands.GLOBAL.push(slashCommand.data.toJSON());
                             tableAddRow(slashCommand, file);
                             break;
                         }
                         case GuildNames.TEA: {
-                            appCommands.TEA = [slashCommand.data.toJSON()];
+                            appCommands.TEA.push(slashCommand.data.toJSON());
                             tableAddRow(slashCommand, file);
                             break;
                         }
                         case GuildNames.TEST: {
-                            appCommands.TEST = [slashCommand.data.toJSON()];
+                            appCommands.TEST.push(slashCommand.data.toJSON());
                             tableAddRow(slashCommand, file);
                             break;
                         }
