@@ -6,7 +6,7 @@ const { findEmoji, emojiList } = require('../../../../Addons/findEmoji');
 const laezMemberRoleID = '1099703236983791698';
 const approvedIcon = 'https://i.imgur.com/DQwdu0u.png';
 
-// Button builder for laezaria's approve button.
+// Button builder for Laezaria's approve button.
 const laezClubApplyApproveButtonBuilder = new ButtonBuilder()
     .setCustomId('laezClubApplyApproveButton')
     .setLabel('Approve')
@@ -53,7 +53,7 @@ module.exports = {
             log.info(`[laezClubApplyApproveButton] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
             // Create reply to defer the button execution.
-            await interaction.reply({ content: `${findEmoji(interaction.client, 'loading')} Preparing response...`, ephemeral: true });
+            await interaction.reply({ content: `${findEmoji(interaction.client, emojiList.loading)} Preparing response...`, ephemeral: true });
 
             // Variable with original embed data.
             const originalEmbed = await interaction.message.embeds[0];

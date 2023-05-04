@@ -7,32 +7,27 @@ const log = require('../../Addons/Logger');
  * @param {Object} message - The message object to add the selection menu to.
  * @returns {Promise<Message>} A Promise that resolves with the updated message with the selection menu added.
  */
-async function addComponentMenu(interaction, message) {
+async function addCreateClubButtonMenu(interaction, message) {
 
     // Make a selection menu using the discord builder module.
     try {
         const row = new ActionRowBuilder()
             .addComponents(
                 new StringSelectMenuBuilder()
-                    .setCustomId('componentMenu')
+                    .setCustomId('createClubButtonMenu')
                     .setPlaceholder('Nothing selected')
                     .setMinValues(1)
-                    .setMaxValues(3)
+                    .setMaxValues(1)
                     .addOptions([
                         {
-                            label: 'Application Button',
-                            description: 'Component to let discord members apply to the club.',
+                            label: 'Laezaria Application Button',
+                            description: 'Creates a button with application button for Laezaria Club.',
                             value: 'laezClubApplyButton',
                         },
                         {
-                            label: 'Example Button',
-                            description: 'Text',
-                            value: 'exampleButton',
-                        },
-                        {
-                            label: 'Unknown Button',
-                            description: 'Unknown button value to check when invalid button is selected.',
-                            value: 'unknown_button',
+                            label: 'THE NORTH Application Button',
+                            description: 'Creates a button with application button for THE NORTH Club.',
+                            value: 'northClubApplyButton',
                         },
                     ]),
             );
@@ -43,21 +38,21 @@ async function addComponentMenu(interaction, message) {
 
     } catch (error) {
         // Catch any potential errors.
-        log.bug('[COMPONENTMENU] Interaction selection menu error:', error);
+        log.bug('[createClubButtonMenu] Interaction selection menu error:', error);
 
         // Send an error message to the user.
         await interaction.reply({
             content: '🥶 Something went wrong with this interaction. Please try again later.',
             ephemeral: true
-        }).catch((editError) => log.bug('[COMPONENTMENU] Error sending interaction reply:', editError));
+        }).catch((editError) => log.bug('[createClubButtonMenu] Error sending interaction reply:', editError));
     }
 }
 
 // Export logic that will be executed when the selection menu option is selected.
 module.exports = {
     enabled: true,
-    name: 'componentMenu',
-    addComponentMenu, // Function to add selection menu component to a provided message object. Used on different files as: addComponentMenu(interaction, message)
+    name: 'createClubButtonMenu',
+    addCreateClubButtonMenu, // Function to add selection menu component to a provided message object. Used on different files as: addCreateClubButtonMenu(interaction, message)
     async execute(interaction, args) { // That handles the interation submit response.
 
         try {
@@ -80,23 +75,23 @@ module.exports = {
                 .addComponents(componentArr);
 
             if (!row.components.length) {
-                return interaction.reply({ content: 'componentArr[] is empty due to missing components.', ephemeral: true }); // CHANGEME: Make this string more readable for non programming folks.
+                return interaction.reply({ content: 'No valid buttons were selected.', ephemeral: true });
             }
 
             // Send the message with components to the 'channelFromMention' object.
-            channelFromMention.send({ components: [row] });
+            const newMessage = await channelFromMention.send({ components: [row] });
 
             // Send a message confirming that the form has been submitted successfully.
-            await interaction.reply({ content: `You selected '${args.join('\', ')}' option(s) for '${channelFromMention}' in componentMenu.\n**Now with additional logic you can do something with it!**`, ephemeral: true });
+            await interaction.reply({ content: `Selected button(s) has been added successfully.\n${newMessage.url}`, ephemeral: true });
 
         } catch (error) {
-            log.bug('[COMPONENTMENU] Interaction selection menu error', error);
+            log.bug('[createClubButtonMenu] Interaction selection menu error', error);
 
             // Send an error message to the user.
             await interaction.reply({
                 content: '🥶 Something went wrong with this interaction. Please try again later.',
                 ephemeral: true
-            }).catch((responseError) => log.bug('[COMPONENTMENU] Error editing interaction reply:', responseError));
+            }).catch((responseError) => log.bug('[createClubButtonMenu] Error editing interaction reply:', responseError));
         }
     }
 };

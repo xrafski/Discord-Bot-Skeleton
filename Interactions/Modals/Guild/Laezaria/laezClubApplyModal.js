@@ -2,11 +2,11 @@ const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, EmbedB
 const log = require('../../../../Addons/Logger');
 const { laezClubApplyApproveButtonBuilder } = require('../../../Buttons/Guild/Laezaria/laezClubApplyApproveButton');
 const { laezClubApplyRejectButtonBuilder } = require('../../../Buttons/Guild/Laezaria/laezClubApplyRejectButton');
-const { findEmoji } = require('../../../../Addons/findEmoji');
+const { findEmoji, emojiList } = require('../../../../Addons/findEmoji');
 
 // Variables
 const failedProofImage = 'https://i.imgur.com/ReMlAhB.png';
-const inboxChannelID = '845638175379423263';
+const inboxChannelID = '1103770722586853518';
 
 async function showLaezClubApplyModal(interaction) {
     // Log who used this interaction.
@@ -121,7 +121,7 @@ module.exports = {
             // An embed builder to gather all information about the applicant and its responses for the guild staff members.
             const applicationEmbed = new EmbedBuilder()
                 .setTitle('Application to join Laezaria')
-                .setDescription(`${findEmoji(interaction.client, 'loading')} Request is **OPEN** and awaiting staff approval.`)
+                .setDescription(`${findEmoji(interaction.client, emojiList.loading)} Request is **OPEN** and awaiting staff approval.`)
                 .setColor('Yellow') // https://discord.js.org/#/docs/discord.js/main/typedef/ColorResolvable
                 .setImage(imgProofImage)
                 .setThumbnail(interaction.user.displayAvatarURL())

@@ -18,7 +18,7 @@ const builder = new ButtonBuilder()
  * @param {import("discord.js").CommandInteraction} interaction - The interaction object.
  * @returns {Promise<void>} A Promise that resolves when the button is added successfully, or rejects if an error occurs.
  */
-async function addlaezClubApplyButton(interaction) {
+async function addLaezClubApplyButton(interaction) {
 
     // Make a button using the discord builder module.
     try {
@@ -46,7 +46,7 @@ module.exports = {
     enabled: true,
     name: 'laezClubApplyButton',
     builder,
-    addlaezClubApplyButton,
+    addLaezClubApplyButton,
     async execute(interaction) { // Logic when user interact with this button.
 
         try {

@@ -61,7 +61,7 @@ module.exports = {
             log.info(`[laezClubApplyRejectReasonModal] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
             // Create reply to defer the button execution.
-            await interaction.reply({ content: `${findEmoji(interaction.client, 'loading')} Preparing response...`, ephemeral: true });
+            await interaction.reply({ content: `${findEmoji(interaction.client, emojiList.loading)} Preparing response...`, ephemeral: true });
 
             // Variables
             const [reason] = args; // Destructuring assignment
@@ -80,7 +80,7 @@ module.exports = {
                 .setFields(originalEmbed.fields);
 
             // Assisng variable with template string for the reject response message.
-            const denyTemplate = `Thank you for the time and effort you put into applying to **Laezaria**. However, we regret to inform you that your application has been **denied** ${findEmoji(interaction.client, emojiList.reject)}`;
+            const denyTemplate = `Thank you for the time and effort you put into applying to **Laezaria**.\nHowever, we regret to inform you that your application has been **denied** ${findEmoji(interaction.client, emojiList.reject)}`;
 
             // Modify userResponses.reason to include reason for the reject response message if present.
             if (userResponses.reason === '') {

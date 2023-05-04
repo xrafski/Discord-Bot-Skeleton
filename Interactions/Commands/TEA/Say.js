@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { PermissionFlagsBits } = require('discord-api-types/v9');
 const log = require('../../../Addons/Logger');
 const { GuildNames } = require('../../../Addons/GuildNames');
-const { findEmoji } = require('../../../Addons/findEmoji');
+const { findEmoji, emojiList } = require('../../../Addons/findEmoji');
 
 module.exports = {
     enabled: true,
@@ -32,7 +32,7 @@ module.exports = {
 
         try {
             // Create reply to defer the command execution.
-            const reply = await interaction.reply({ content: `${findEmoji(interaction.client, 'loading')} Sending message...`, ephemeral: true });
+            const reply = await interaction.reply({ content: `${findEmoji(interaction.client, emojiList.loading)} Sending message...`, ephemeral: true });
 
             if (!interaction.channel) {
                 throw new Error('Interaction channel is undefined.');

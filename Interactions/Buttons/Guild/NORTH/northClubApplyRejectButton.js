@@ -49,7 +49,7 @@ module.exports = {
             log.info(`[northClubApplyRejectButton] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
             // Display modal to the interaction.user interface.
-            showNorthClubApplyRejectReasonModal(interaction); // Entire logic to reject application is under this reason modal.
+            showNorthClubApplyRejectReasonModal(interaction); // Entire logic to reject application is under this reason modal..
 
         } catch (error) {
             log.bug('[northClubApplyRejectButton] Interaction button error', error);

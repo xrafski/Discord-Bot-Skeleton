@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const log = require('../../../Addons/Logger');
 const { GuildNames } = require('../../../Addons/GuildNames');
-const { findEmoji } = require('../../../Addons/findEmoji');
+const { findEmoji, emojiList } = require('../../../Addons/findEmoji');
 
 // Constants
 const PING_THRESHOLD = [130, 250];
@@ -23,7 +23,7 @@ module.exports = {
 
 		try {
 			// Send a reply to the user.
-			const reply = await interaction.reply({ content: `${findEmoji(interaction.client, 'loading')} Checking ping...`, ephemeral: true });
+			const reply = await interaction.reply({ content: `${findEmoji(interaction.client, emojiList.loading)} Checking ping...`, ephemeral: true });
 
 			// Fake 2s delay to appear as if the bot is doing something 😂
 			await new Promise((resolve) => setTimeout(resolve, 2000));

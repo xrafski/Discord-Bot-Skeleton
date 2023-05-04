@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { GuildNames } = require('../../../../Addons/GuildNames');
 const log = require('../../../../Addons/Logger');
-const { findEmoji } = require('../../../../Addons/findEmoji');
+const { findEmoji, emojiList } = require('../../../../Addons/findEmoji');
 
 module.exports = {
     enabled: true,
@@ -18,10 +18,10 @@ module.exports = {
 
         try {
             // Create reply to defer the command execution.
-            const reply = await interaction.reply({ content: `${findEmoji(interaction.client, 'loading')} Preparing reseponse...`, ephemeral: true });
+            const reply = await interaction.reply({ content: `${findEmoji(interaction.client, emojiList.loading)} Preparing reseponse...`, ephemeral: true });
 
             // Edit the reply to indicate success.
-            await reply.edit({ content: `${findEmoji(interaction.client, 'loading')} This is a test command for a test development server!` });
+            await reply.edit({ content: `${findEmoji(interaction.client, emojiList.loading)} This is a test command for a test development server!` });
         } catch (error) {
             log.bug('[/ABOUT] Interaction error:', error);
 

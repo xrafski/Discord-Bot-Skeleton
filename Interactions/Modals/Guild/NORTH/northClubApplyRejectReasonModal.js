@@ -3,7 +3,7 @@ const log = require('../../../../Addons/Logger');
 const { findEmoji, emojiList } = require('../../../../Addons/findEmoji');
 
 // Variables
-const rejectIcon = 'https://cdn.discordapp.com/attachments/756494646678519878/758105625594036295/image0_1.png'
+const rejectedIcon = 'https://i.imgur.com/90HP5c6.png';
 
 async function showNorthClubApplyRejectReasonModal(interaction) {
     // Log who used this interaction.
@@ -60,7 +60,7 @@ module.exports = {
             log.info(`[northClubApplyRejectReasonModal] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
             // Create reply to defer the button execution.
-            await interaction.reply({ content: `${findEmoji(interaction.client, 'loading')} Preparing response...`, ephemeral: true });
+            await interaction.reply({ content: `${findEmoji(interaction.client, emojiList.loading)} Preparing response...`, ephemeral: true });
 
             // Variables
             const [reason] = args; // Destructuring assignment
@@ -79,7 +79,7 @@ module.exports = {
                 .setFields(originalEmbed.fields);
 
             // Assisng variable with template string for the reject response message.
-            const denyTemplate = `Thank you for the time and effort you put into applying to **THE NORTH**. However, we regret to inform you that your application has been **denied** ${findEmoji(interaction.client, emojiList.reject)}`;
+            const denyTemplate = `Thank you for the time and effort you put into applying to **THE NORTH**.\nHowever, we regret to inform you that your application has been **denied** ${findEmoji(interaction.client, emojiList.reject)}`;
 
             // Modify userResponses.reason to include reason for the reject response message if present.
             if (userResponses.reason === '') {

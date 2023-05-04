@@ -1,12 +1,12 @@
 const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js');
 const log = require('../../../../Addons/Logger');
-const { northClubApplyApproveButton } = require('../../../Buttons/Guild/NORTH/northClubApplyApproveButton')
-const { northClubApplyRejectButton } = require('../../../Buttons/Guild/NORTH/northClubApplyRejectButton')
-const { findEmoji } = require('../../../../Addons/findEmoji');
+const { northClubApplyApproveButtonBuilder } = require('../../../Buttons/Guild/NORTH/northClubApplyApproveButton');
+const { northClubApplyRejectButtonBuilder } = require('../../../Buttons/Guild/NORTH/northClubApplyRejectButton');
+const { findEmoji, emojiList } = require('../../../../Addons/findEmoji');
 
 // Variables
-const failedProofImage = 'https://cdn.discordapp.com/attachments/756494646678519878/758105625594036295/image0_1.png'
-const inboxChannelID = '1095111479449092276'
+const failedProofImage = 'https://i.imgur.com/90HP5c6.png';
+const inboxChannelID = '1103769703110938815';
 
 async function showNorthClubApplyModal(interaction) {
     // Log who used this interaction
@@ -16,8 +16,8 @@ async function showNorthClubApplyModal(interaction) {
     try {
         // Create the modal
         const northClubApplyModalBuilder = new ModalBuilder()
-        .setCustomId('northClubApplyModal')
-        .setTitle('THE NORTH Club Application');
+            .setCustomId('northClubApplyModal')
+            .setTitle('THE NORTH Club Application');
 
         // Create the text input components
         const northApplyQ1Input = new TextInputBuilder()
@@ -34,6 +34,7 @@ async function showNorthClubApplyModal(interaction) {
             .setLabel('What about Trove keeps you playing')
             .setStyle(TextInputStyle.Paragraph)
             .setPlaceholder('E.g. Trove is fun...')
+            .setMaxLength(500)
             .setRequired(true);
 
         const northApplyQ3Input = new TextInputBuilder()
@@ -41,6 +42,7 @@ async function showNorthClubApplyModal(interaction) {
             .setLabel('What can you tell us about yourself?')
             .setStyle(TextInputStyle.Paragraph)
             .setPlaceholder('E.g. My Hobbies are...')
+            .setMaxLength(500)
             .setRequired(true);
 
         const northApplyQ4Input = new TextInputBuilder()
@@ -48,13 +50,15 @@ async function showNorthClubApplyModal(interaction) {
             .setLabel('Why do you want to join The North?')
             .setStyle(TextInputStyle.Paragraph)
             .setPlaceholder('E.g. Because The North is...')
-            .setRequired(true);    
+            .setMaxLength(500)
+            .setRequired(true);
 
         const northApplyQ5Input = new TextInputBuilder()
             .setCustomId('northApplyQ5')
             .setLabel('Image Proof for your Total Mastery Rank')
             .setStyle(TextInputStyle.Short)
             .setPlaceholder('Image URL')
+            .setMaxLength(100)
             .setRequired(false);
 
         // Add inputs to the modal.
@@ -94,20 +98,20 @@ module.exports = {
         try {
             // Log who executed this interaction.
             log.info(`[northClubApplyModal] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
-            
-            const [ nickname, whatPlaying, aboutYourself, whyJoin, proofImage ] = args; // Destructuring assignment
-            const userResponses = { nickname, whatPlaying, aboutYourself, whyJoin, proofImage } // Object with user responses provided with the modal
+
+            const [nickname, whatPlaying, aboutYourself, whyJoin, proofImage] = args; // Destructuring assignment
+            const userResponses = { nickname, whatPlaying, aboutYourself, whyJoin, proofImage }; // Object with user responses provided with the modal
             let imgProofImage = userResponses.proofImage; // Variable to check if proof image is actually an image.
 
             // If isImage() returns false for proofImage.
             if (isImage(imgProofImage) === false) {
-                imgProofImage = failedProofImage
+                imgProofImage = failedProofImage;
             }
 
             // An embed builder to gather all information about the applicant and its responses for guild staff members.
             const applicationEmbed = new EmbedBuilder()
                 .setTitle('Application to join THE NORTH')
-                .setDescription(`${findEmoji(interaction.client, 'loading')} Request is **OPEN and awaiting staff approval`)
+                .setDescription(`${findEmoji(interaction.client, emojiList.loading)} Request is **OPEN** and awaiting staff approval`)
                 .setImage(imgProofImage)
                 .setThumbnail(interaction.user.displayAvatarURL())
                 .setTimestamp()
@@ -140,8 +144,8 @@ module.exports = {
                         value: `\`\`\`${userResponses.whyJoin}\`\`\``
                     },
                     {
-                        name: "Image for proof of Total Mastery Level ",
-                        value: "If you do not see a image of proof, it means the Applicant either did not give a valid Image URL or left this part Blank"
+                        name: 'Image for proof of Total Mastery Level ',
+                        value: 'If you do not see a image of proof, it means the Applicant either did not give a valid Image URL or left this part Blank'
                     },
                     {
                         name: 'Raw Image URL',
@@ -151,9 +155,9 @@ module.exports = {
 
             // ActionRow with staff buttons to either approve or reject the user application.
             const staffApplicationActionRow = new ActionRowBuilder()
-                .addComponents(northClubApplyApproveButton, northClubApplyRejectButton);
+                .addComponents(northClubApplyApproveButtonBuilder, northClubApplyRejectButtonBuilder);
 
-            
+
             // Get the channel object where to send the application message.
             const inboxChannel = interaction.guild.channels.cache.get(inboxChannelID);
             // Throw exception if channel is not found.
@@ -162,10 +166,10 @@ module.exports = {
             await inboxChannel.send({ embeds: [applicationEmbed], components: [staffApplicationActionRow] });
 
             // Send a reply message confirming that the form has been submitted successfully.
-            await interaction.reply({ content: '**You submitted application to the club!**\nNow you need to wait for a staff member to either approve or reject your reques.', ephemeral: true })
+            await interaction.reply({ content: '**You submitted application to the club!**\nNow you need to wait for a staff member to either approve or reject your request.', ephemeral: true });
         } catch (error) {
             log.bug('[northClubApplyModal] Error to execute this modal:', error);
         }
 
     }
-}
+};

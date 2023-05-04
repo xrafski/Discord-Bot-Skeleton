@@ -8,7 +8,8 @@ const northMemberRoleID = '288385193285386248';
 
 const builder = new ButtonBuilder()
     .setCustomId('northClubApplyButton')
-    .setLabel('📋 Apply')
+    .setLabel('Apply')
+    .setEmoji('📝')
     .setStyle(ButtonStyle.Primary);
 
 /**
@@ -46,12 +47,12 @@ module.exports = {
     builder,
     addnorthClubApplyButton,
     async execute(interaction) { // Logic when user interact with this button.
-        
+
         try {
             // Check if interaction user is already a club member.
             const member = await interaction.guild.members.fetch(interaction.user.id);
             if (member.roles.cache.has(northMemberRoleID)) {
-                return interaction.reply({ content: `${findEmoji(interaction.client, emojiList.verify)} You are already a club member of **Laezaria**!`, ephemeral: true });
+                return interaction.reply({ content: `${findEmoji(interaction.client, emojiList.verify)} You are already a club member of **THE NORTH**!`, ephemeral: true });
             }
 
             // Display THE NORTH club application modal to the user.

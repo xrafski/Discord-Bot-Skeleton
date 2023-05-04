@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { PermissionFlagsBits } = require('discord-api-types/v9');
 const { GuildNames } = require('../../../Addons/GuildNames');
 const log = require('../../../Addons/Logger');
-const { findEmoji } = require('../../../Addons/findEmoji');
+const { findEmoji, emojiList } = require('../../../Addons/findEmoji');
 
 module.exports = {
     enabled: false,
@@ -20,7 +20,7 @@ module.exports = {
 
         try {
             // Create reply to defer the command execution.
-            const reply = await interaction.reply({ content: `${findEmoji(interaction.client, 'loading')} Preparing reseponse...`, ephemeral: true });
+            const reply = await interaction.reply({ content: `${findEmoji(interaction.client, emojiList.loading)} Preparing reseponse...`, ephemeral: true });
 
             // SOME CODE FOR THE COMMAND.
 

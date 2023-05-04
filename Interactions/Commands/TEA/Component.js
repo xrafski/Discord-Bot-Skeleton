@@ -4,7 +4,7 @@ const { PermissionFlagsBits } = require('discord-api-types/v9');
 const { GuildNames } = require('../../../Addons/GuildNames');
 const log = require('../../../Addons/Logger');
 const { findEmoji, emojiList } = require('../../../Addons/findEmoji');
-const { addComponentMenu } = require('../../Menus/componentMenu');
+const { addCreateClubButtonMenu } = require('../../Menus/createClubButtonMenu');
 
 module.exports = {
     enabled: true,
@@ -29,16 +29,6 @@ module.exports = {
                                 .setDescription('Channel ID for the component to create')
                                 .setRequired(true)
                         )
-                        .addStringOption(option =>
-                            option
-                                .setName('club')
-                                .setDescription('Pick a club name to create a coresponding button')
-                                .addChoices(
-                                    { name: 'Laezaria', value: 'laezaria' },
-                                    { name: 'The North', value: 'thenorth' }
-                                )
-                                .setRequired(true),
-                        )
                 ),
         ),
 
@@ -50,8 +40,8 @@ module.exports = {
 
         try {
             // Create reply to defer the command execution.
-            const reply = await interaction.reply({ content: `${findEmoji(interaction.client, 'loading')} Preparing reseponse...`, ephemeral: true });
-            const [subCmdGroup, subCmd, channelID, clubName] = args; // Destructuring assignment
+            const reply = await interaction.reply({ content: `${findEmoji(interaction.client, emojiList.loading)} Preparing reseponse...`, ephemeral: true });
+            const [subCmdGroup, subCmd, channelID] = args; // Destructuring assignment
 
             // Check if channel ID is a number
             if (!Number.isInteger(Number(channelID))) {
@@ -66,8 +56,8 @@ module.exports = {
 
 
             // Laezaria Add Application Button.
-            if (subCmdGroup === 'create' && subCmd === 'application_button' && clubName == 'laezaria') {
-                return addComponentMenu(interaction, `${findEmoji(interaction.client, emojiList.loading)} Select components to post in ${tChannel}!`);
+            if (subCmdGroup === 'create' && subCmd === 'application_button') {
+                return addCreateClubButtonMenu(interaction, `${findEmoji(interaction.client, emojiList.loading)} Select components to post in ${tChannel}!`);
             }
 
             // Edit the reply to indicate success.
