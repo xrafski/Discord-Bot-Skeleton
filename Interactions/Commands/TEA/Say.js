@@ -5,7 +5,7 @@ const { GuildNames } = require('../../../Addons/GuildNames');
 const { findEmoji } = require('../../../Addons/findEmoji');
 
 module.exports = {
-    enabled: false,
+    enabled: true,
     guild: GuildNames.TEA,
     data: new SlashCommandBuilder()
         .setName('say')

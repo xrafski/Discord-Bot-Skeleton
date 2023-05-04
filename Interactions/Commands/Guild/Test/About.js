@@ -4,7 +4,7 @@ const log = require('../../../../Addons/Logger');
 const { findEmoji } = require('../../../../Addons/findEmoji');
 
 module.exports = {
-    enabled: false,
+    enabled: true,
     guild: GuildNames.TEST,
     data: new SlashCommandBuilder()
         .setName('about')
