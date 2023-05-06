@@ -2,6 +2,11 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const log = require('../../../../Addons/Logger');
 const { showNorthClubApplyRejectReasonModal } = require('../../../Modals/Guild/NORTH/northClubApplyRejectReasonModal');
 
+// Variables
+const grandCounsilRoleID = '1104437369559601244';
+const devRoleID = '1104437516154712064';
+const adminRoleID = '1104437669951438879';
+
 // Button builder for THE NORTH's reject button.
 const northClubApplyRejectButtonBuilder = new ButtonBuilder()
     .setCustomId('northClubApplyRejectButton')
@@ -48,22 +53,14 @@ module.exports = {
             // Log who executed this interaction.
             log.info(`[northClubApplyRejectButton] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
-            // Check if interactor has permissions to use the button
-            const member = await interaction.guild.members.fetch(interaction.user.id)
-            if (!member.roles.cache.has(grandcounsilRole) && !member.roles.cache.has(devRole) && !member.roles.cache.has(adminRoleId)) {
-                interaction.reply({ content: "You are not Authorised to perform this action!", ephemeral: true})
+            // Get the member object in that guild.
+            const member = await interaction.guild.members.fetch(interaction.user.id);
 
-                setTimeout(async () => {
-                    try {
-                        await interaction.deleteReply()
-                    } catch (error) {
-                        console.error(error)
-                    }
-                }, 2000)
-
-                return;
+            // Check if interactor has permissions to use the button.
+            if (!member.roles.cache.has(grandCounsilRoleID) && !member.roles.cache.has(devRoleID) && !member.roles.cache.has(adminRoleID)) {
+                return interaction.reply({ content: 'You are not authorised to perform this action!', ephemeral: true });
             }
-            
+
             // Display modal to the interaction.user interface.
             showNorthClubApplyRejectReasonModal(interaction); // Entire logic to reject application is under this reason modal.
 

@@ -21,7 +21,7 @@ async function showNorthClubApplyRejectReasonModal(interaction) {
 
         // Create the text input components
         const northApplyRejectReasonQ1Input = new TextInputBuilder()
-            .setCustomId('northApplyQ1')
+            .setCustomId('northApplyRejectReasonQ1')
             .setLabel('Reason')
             .setPlaceholder('Rejection reason for this application')
             .setRequired(false)
@@ -69,9 +69,9 @@ module.exports = {
 
             // Get a new embed instance for this interaction message.
             const newEmbed = new EmbedBuilder()
-                .setTitle(originalEmbed.title)
-                .setDescription(`${findEmoji(interaction.client, emojiList.reject)} Request is **CLOSED** and rejected by ${interaction.user}.`)
-                .setColor('Red') // https://discord.js.org/#/docs/discord.js/main/typedef/ColorResolvable
+                .setTitle('Application succesfully finished')
+                .setDescription(`${findEmoji(interaction.client, emojiList.reject)} Request is **CLOSED**\nRejected by ${interaction.user}.`)
+                .setColor('Red')
                 .setImage(rejectedIcon)
                 .setThumbnail(originalEmbed.thumbnail.url)
                 .setFooter(originalEmbed.footer)

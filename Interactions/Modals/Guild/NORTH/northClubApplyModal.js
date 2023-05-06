@@ -58,8 +58,8 @@ async function showNorthClubApplyModal(interaction) {
             .setLabel('Image Proof for your Total Mastery Rank')
             .setStyle(TextInputStyle.Short)
             .setPlaceholder('Image URL')
-            .setMaxLength(100)
-            .setRequired(false);
+            .setMaxLength(200)
+            .setRequired(true);
 
         // Add inputs to the modal.
         northClubApplyModalBuilder.addComponents(
@@ -110,8 +110,9 @@ module.exports = {
 
             // An embed builder to gather all information about the applicant and its responses for guild staff members.
             const applicationEmbed = new EmbedBuilder()
-                .setTitle('Application to join THE NORTH')
+                .setTitle('A new application to join THE NORTH')
                 .setDescription(`${findEmoji(interaction.client, emojiList.loading)} Request is **OPEN** and awaiting staff approval`)
+                .setColor('Aqua')
                 .setImage(imgProofImage)
                 .setThumbnail(interaction.user.displayAvatarURL())
                 .setTimestamp()
@@ -161,7 +162,7 @@ module.exports = {
             // Get the channel object where to send the application message.
             const inboxChannel = interaction.guild.channels.cache.get(inboxChannelID);
             // Throw exception if channel is not found.
-            if (!inboxChannel) throw new Error(`inboxChannel variable returns undefined which means this channel ID '${inboxChannelID}' is either invalid or has been removed from this guild`);
+            if (!inboxChannel) throw new Error(`inboxChannel variable returns undefined which means this channel ID '${inboxChannelID}' is either invalid or has been removed from this guild.`);
             // Send message with the embed button components to accept or reject application.
             await inboxChannel.send({ embeds: [applicationEmbed], components: [staffApplicationActionRow] });
 

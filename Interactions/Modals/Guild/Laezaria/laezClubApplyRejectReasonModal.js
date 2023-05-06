@@ -22,7 +22,7 @@ async function showLaezClubApplyRejectReasonModal(interaction) {
 
         // Create the text input components
         const laezApplyRejectReasonQ1Input = new TextInputBuilder()
-            .setCustomId('laezApplyQ1')
+            .setCustomId('laezApplyRejectReasonQ1')
             .setLabel('Reason')
             .setPlaceholder('Rejection reason for this application')
             .setRequired(false)
