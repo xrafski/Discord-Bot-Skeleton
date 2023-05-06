@@ -48,6 +48,22 @@ module.exports = {
             // Log who executed this interaction.
             log.info(`[northClubApplyRejectButton] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
+            // Check if interactor has permissions to use the button
+            const member = await interaction.guild.members.fetch(interaction.user.id)
+            if (!member.roles.cache.has(grandcounsilRole) && !member.roles.cache.has(devRole) && !member.roles.cache.has(adminRoleId)) {
+                interaction.reply({ content: "You are not Authorised to perform this action!", ephemeral: true})
+
+                setTimeout(async () => {
+                    try {
+                        await interaction.deleteReply()
+                    } catch (error) {
+                        console.error(error)
+                    }
+                }, 2000)
+
+                return;
+            }
+            
             // Display modal to the interaction.user interface.
             showNorthClubApplyRejectReasonModal(interaction); // Entire logic to reject application is under this reason modal.
 
