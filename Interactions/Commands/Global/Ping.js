@@ -22,10 +22,10 @@ module.exports = {
 
 	async execute(interaction) {
 		try {
-			// Destructuring assignment
+			// Destructuring assignment.
 			const { user, guild } = interaction;
 
-			// Log who used the command
+			// Log who used the command.
 			log.info(`[/${fileName}] Command used by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
 
 			// Send a reply to the user.
