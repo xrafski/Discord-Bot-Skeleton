@@ -1,8 +1,8 @@
 const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js');
 const log = require('../../../../Addons/Logger');
-const { findEmoji, emojiList } = require('../../../../Addons/findEmoji');
 const path = require('path');
 const { LaezariaEnums } = require('../../../../Addons/TempEnums');
+const { EmojiEnums } = require('../../../../Addons/Enums');
 
 // Get file name.
 const fileName = path.basename(__filename).slice(0, -3);
@@ -55,9 +55,9 @@ module.exports = {
             log.info(`[${fileName}] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
             // Create reply to defer the button execution.
-            const reply = await interaction.reply({ content: `${findEmoji(interaction.client, emojiList.loading)} Preparing response...`, ephemeral: true });
+            const reply = await interaction.reply({ content: `${EmojiEnums.LOADING} Preparing response...`, ephemeral: true });
 
-            // Variables
+            // Vars
             const [reason] = args; // Destructuring assignment
             const userResponses = { reason }; // Object with user responses provided within the modal.
             const originalEmbed = await interaction.message.embeds[0];
@@ -65,7 +65,7 @@ module.exports = {
             // Get a new embed instance for this interaction message.
             const newEmbed = new EmbedBuilder()
                 .setTitle(originalEmbed.title)
-                .setDescription(`${findEmoji(interaction.client, emojiList.reject)} Request is **CLOSED** and rejected by ${interaction.user}.`)
+                .setDescription(`${EmojiEnums.REJECT} Request is **CLOSED** and rejected by ${interaction.user}.`)
                 .setColor('Red')
                 .setImage(LaezariaEnums.REJECTED_URL)
                 .setThumbnail(originalEmbed.thumbnail.url)
@@ -74,7 +74,7 @@ module.exports = {
                 .setFields(originalEmbed.fields);
 
             // Assign variable with template string for the reject response message.
-            const denyTemplate = `Thank you for trying to verify your IGN in **Laezaria**.\nHowever, we regret to inform you that your verification has been **denied** ${findEmoji(interaction.client, emojiList.reject)}`;
+            const denyTemplate = `Thank you for trying to verify your IGN in **Laezaria**.\nHowever, we regret to inform you that your verification has been **denied** ${EmojiEnums.REJECT}`;
 
             // Modify userResponse.reason to include reason for the reject response message if present.
             if (userResponses.reason === '') {

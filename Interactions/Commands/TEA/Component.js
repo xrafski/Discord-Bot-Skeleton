@@ -3,8 +3,8 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { PermissionFlagsBits } = require('discord-api-types/v9');
 const { GuildNames } = require('../../../Addons/GuildNames');
 const log = require('../../../Addons/Logger');
-const { findEmoji, emojiList } = require('../../../Addons/findEmoji');
 const { addCreateClubButtonMenu } = require('../../Menus/createClubButtonMenu');
+const { EmojiEnums } = require('../../../Addons/Enums');
 
 module.exports = {
     enabled: true,
@@ -40,7 +40,7 @@ module.exports = {
 
         try {
             // Create reply to defer the command execution.
-            const reply = await interaction.reply({ content: `${findEmoji(interaction.client, emojiList.loading)} Preparing reseponse...`, ephemeral: true });
+            const reply = await interaction.reply({ content: `${EmojiEnums.LOADING} Preparing reseponse...`, ephemeral: true });
             const [subCmdGroup, subCmd, channelID] = args; // Destructuring assignment
 
             // Check if channel ID is a number
@@ -57,7 +57,7 @@ module.exports = {
 
             // Laezaria Add Application Button.
             if (subCmdGroup === 'create' && subCmd === 'application_button') {
-                return addCreateClubButtonMenu(interaction, `${findEmoji(interaction.client, emojiList.loading)} Select components to post in ${tChannel}!`);
+                return addCreateClubButtonMenu(interaction, `${EmojiEnums.LOADING} Select components to post in ${tChannel}!`);
             }
 
             // Edit the reply to indicate success.

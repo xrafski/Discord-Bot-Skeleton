@@ -1,22 +1,24 @@
 const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js');
 const log = require('../../../../Addons/Logger');
+const path = require('path');
 const { northClubApplyApproveButtonBuilder } = require('../../../Buttons/Guild/NORTH/northClubApplyApproveButton');
 const { northClubApplyRejectButtonBuilder } = require('../../../Buttons/Guild/NORTH/northClubApplyRejectButton');
-const { findEmoji, emojiList } = require('../../../../Addons/findEmoji');
+const { InteractionError } = require('../../../../Addons/Classes');
+const { NorthEnums } = require('../../../../Addons/TempEnums');
+const { EmojiEnums } = require('../../../../Addons/Enums');
 
-// Variables
-const failedProofImage = 'https://i.imgur.com/90HP5c6.png';
-const inboxChannelID = '1103769703110938815';
+// Get file name.
+const fileName = path.basename(__filename).slice(0, -3);
 
 async function showNorthClubApplyModal(interaction) {
     // Log who used this interaction
-    log.info(`[northClubApplyModal] Interaction used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
+    log.info(`[${fileName}] Interaction used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
     // Make a modal using the discord builder module
     try {
         // Create the modal
         const northClubApplyModalBuilder = new ModalBuilder()
-            .setCustomId('northClubApplyModal')
+            .setCustomId(fileName)
             .setTitle('THE NORTH Club Application');
 
         // Create the text input components
@@ -74,15 +76,14 @@ async function showNorthClubApplyModal(interaction) {
         await interaction.showModal(northClubApplyModalBuilder);
 
     } catch (error) {
-        // Catch any potential errors.
-        log.bug('[northClubApplyModal] Interaction error:', error);
+        new InteractionError(interaction, fileName).issue(error);
     }
 }
 
 // Export logic that will be executed when the modal is submitted.
 module.exports = {
     enabled: true,
-    name: 'northClubApplyModal',
+    name: fileName,
     showNorthClubApplyModal, // Function to show modal to the user. Used on different files as: showNorthClubApplyModal(interaction)
     async execute(interaction, args) { // That handles the interaction submit response.
 
@@ -97,7 +98,7 @@ module.exports = {
 
         try {
             // Log who executed this interaction.
-            log.info(`[northClubApplyModal] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
+            log.info(`[${fileName}] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
             const [nickname, whatPlaying, aboutYourself, whyJoin, proofImage] = args; // Destructuring assignment
             const userResponses = { nickname, whatPlaying, aboutYourself, whyJoin, proofImage }; // Object with user responses provided with the modal
@@ -105,13 +106,13 @@ module.exports = {
 
             // If isImage() returns false for proofImage.
             if (isImage(imgProofImage) === false) {
-                imgProofImage = failedProofImage;
+                imgProofImage = NorthEnums.CLUB_LOGO_URL;
             }
 
             // An embed builder to gather all information about the applicant and its responses for guild staff members.
             const applicationEmbed = new EmbedBuilder()
                 .setTitle('A new application to join THE NORTH')
-                .setDescription(`${findEmoji(interaction.client, emojiList.loading)} Request is **OPEN** and awaiting staff approval`)
+                .setDescription(`${EmojiEnums.LOADING} Request is **OPEN** and awaiting staff approval`)
                 .setColor('Aqua')
                 .setImage(imgProofImage)
                 .setThumbnail(interaction.user.displayAvatarURL())
@@ -158,19 +159,20 @@ module.exports = {
             const staffApplicationActionRow = new ActionRowBuilder()
                 .addComponents(northClubApplyApproveButtonBuilder, northClubApplyRejectButtonBuilder);
 
-
             // Get the channel object where to send the application message.
-            const inboxChannel = interaction.guild.channels.cache.get(inboxChannelID);
+            const inboxChannel = interaction.guild.channels.cache.get(NorthEnums.channels.INBOX_ID);
+
             // Throw exception if channel is not found.
-            if (!inboxChannel) throw new Error(`inboxChannel variable returns undefined which means this channel ID '${inboxChannelID}' is either invalid or has been removed from this guild.`);
+            if (!inboxChannel) throw new Error(`inboxChannel variable returns undefined which means this channel ID '${NorthEnums.channels.INBOX_ID}' is either invalid or has been removed from this guild.`);
+
             // Send message with the embed button components to accept or reject application.
             await inboxChannel.send({ embeds: [applicationEmbed], components: [staffApplicationActionRow] });
 
             // Send a reply message confirming that the form has been submitted successfully.
             await interaction.reply({ content: '**You submitted application to the club!**\nNow you need to wait for a staff member to either approve or reject your request.', ephemeral: true });
-        } catch (error) {
-            log.bug('[northClubApplyModal] Error to execute this modal:', error);
-        }
 
+        } catch (error) {
+            new InteractionError(interaction, fileName).issue(error);
+        }
     }
 };

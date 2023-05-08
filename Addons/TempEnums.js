@@ -9,7 +9,22 @@ const LaezariaEnums = Object.freeze({
 });
 
 const NorthEnums = Object.freeze({
+    GUILD_ID: '741573211203960853',
+    CLUB_LOGO_URL: 'https://i.imgur.com/90HP5c6.png',
 
+    roles: {
+        STAFF_ID: '1104440936479592629',
+        GRANDCOUSIL_ID: '1104437369559601244',
+        DEV_ID: '1104437516154712064',
+        ADMIN_ID: '1104437669951438879',
+        KINGSGUARD_ID: '1104450397260763266',
+        KNIGHT_ID: '1104450515842105496',
+        MEMBER_ID: '288385193285386248',
+        GUEST_ID: '1104450320261713930',
+    },
+    channels: {
+        INBOX_ID: '1103769703110938815'
+    }
 });
 
 module.exports = {

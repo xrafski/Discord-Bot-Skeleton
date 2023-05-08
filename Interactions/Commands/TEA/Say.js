@@ -1,14 +1,19 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { PermissionFlagsBits } = require('discord-api-types/v9');
 const log = require('../../../Addons/Logger');
+const path = require('path');
 const { GuildNames } = require('../../../Addons/GuildNames');
-const { findEmoji, emojiList } = require('../../../Addons/findEmoji');
+const { EmojiEnums } = require('../../../Addons/Enums');
+const { InteractionError } = require('../../../Addons/Classes');
+
+// Get file name.
+const fileName = path.basename(__filename).slice(0, -3).toLowerCase();
 
 module.exports = {
-    enabled: true,
+    enabled: false,
     guild: GuildNames.TEA,
     data: new SlashCommandBuilder()
-        .setName('say')
+        .setName(fileName)
         .setDescription('Say something using the bot.')
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addStringOption((option) =>
@@ -25,18 +30,15 @@ module.exports = {
         ),
 
     async execute(interaction, args) {
-        const { user, guild } = interaction;
-
-        // Log who used the command.
-        log.info(`[/SAY] Command used by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
-
         try {
-            // Create reply to defer the command execution.
-            const reply = await interaction.reply({ content: `${findEmoji(interaction.client, emojiList.loading)} Sending message...`, ephemeral: true });
+            // Destructuring assignment
+            const { user, guild } = interaction;
 
-            if (!interaction.channel) {
-                throw new Error('Interaction channel is undefined.');
-            }
+            // Log who used the command.
+            log.info(`[/${fileName}] Command used by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
+
+            // Create reply to defer the command execution.
+            const reply = await interaction.reply({ content: `${EmojiEnums.LOADING} Sending message...`, ephemeral: true });
 
             // Assign values to variables.
             const content = args[0] ?? null;
@@ -67,21 +69,16 @@ module.exports = {
 
 
         } catch (error) {
-            log.bug('[/SAY] Interaction error:', error);
-
             // Send an error message to the user about missing permissions.
             if (error?.message === 'Missing Permissions') {
                 await interaction.editReply({
-                    content: `🥶 Something went wrong with this interaction.\nMake sure ${interaction.client.user} has 'Send Messages' and/or 'Attach Files' permission to perform this action.`,
+                    content: `Make sure ${interaction.client.user} has 'Send Messages' and/or 'Attach Files' permission to perform this action.`,
                     ephemeral: true
-                }).catch((editError) => log.bug('[/SAY] Error editing interaction reply:', editError));
+                }).catch((editError) => log.bug(`[/${fileName}] Error editing interaction reply:`, editError));
             }
 
             // Default error message to the user.
-            await interaction.editReply({
-                content: '🥶 Something went wrong with this interaction. Please try again later.',
-                ephemeral: true
-            }).catch((editError) => log.bug('[/SAY] Error editing interaction reply:', editError));
+            new InteractionError(interaction, fileName).issue(error);
         }
     },
 };
