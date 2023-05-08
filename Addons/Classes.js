@@ -17,11 +17,11 @@ class ErrorHandler {
     }
 
     /**
-     * Report the error to the user and log it.
+     * Report the issue to the user and log it.
      * @async
      * @returns {Promise<void>}
      */
-    async report() {
+    async issue() {
         try {
             // Log the error to the console.
             log.bug(`[${this.fileName}] Interaction error:`, this.error);
