@@ -17,7 +17,7 @@ module.exports = {
 
     async execute(interaction) {
         try {
-            // Destructuring assignment
+            // Destructuring assignment.
             const { user, guild } = interaction;
 
             // Log who used the command.
