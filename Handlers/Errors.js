@@ -29,4 +29,4 @@ const errorHandler = () =>
         log.debug('🆗 [ERROR HANDLER] Finished resolving application error handler.');
     });
 
-module.exports = { errorHandler };
+module.exports = errorHandler;

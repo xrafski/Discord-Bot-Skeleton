@@ -1,3 +1,9 @@
+const GuildEnums = Object.freeze({
+    GLOBAL: 'GLOBAL', // Global command enum.
+    TEA: 'TEA', // TEA's Backend command enum.
+    TEST: 'TEST', // Test command enum.
+});
+
 const EmojiEnums = Object.freeze({
     LOADING: 'loading',
     APPROVE: 'approve',
@@ -15,6 +21,7 @@ const GifEnums = Object.freeze({
 });
 
 module.exports = {
+    GuildEnums,
     EmojiEnums,
     GifEnums
 };

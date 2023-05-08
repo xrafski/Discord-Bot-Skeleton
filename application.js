@@ -2,9 +2,9 @@ require('dotenv').config();
 const { Client, GatewayIntentBits } = require('discord.js');
 const log = require('./Addons/Logger');
 const { loadAppCmds, registerGuildCmds, registerGlobalCmds, appCommands } = require('./Handlers/Commands');
-const { loadAppButtons } = require('./Handlers/Buttons');
-const { errorHandler } = require('./Handlers/Errors');
-const { eventHandler } = require('./Handlers/Events');
+const loadAppButtons = require('./Handlers/Buttons');
+const errorHandler = require('./Handlers/Errors');
+const eventHandler = require('./Handlers/Events');
 const loadAppModals = require('./Handlers/Modals');
 const loadAppMenus = require('./Handlers/Menus');
 

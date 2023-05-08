@@ -3,7 +3,7 @@ const path = require('path');
 const AsciiTable = require('ascii-table');
 const { Collection, REST, Routes } = require('discord.js');
 const log = require('../Addons/Logger');
-const { GuildNames } = require('../Addons/GuildNames');
+const { GuildEnums } = require('../Addons/Enums');
 
 /**
  * Object with arrays of application interactions commands.
@@ -21,9 +21,9 @@ const appCommands = {
  * @returns {Promise<string>} - A promise that resolves with a table of loaded commands as a string, or rejects with an error message.
  * @example await loadAppCmds(client).then(function).catch(error);
  */
-const loadAppCmds = (client) =>
+async function loadAppCmds(client) {
     // eslint-disable-next-line no-async-promise-executor
-    new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         log.debug('[LOAD COMMANDS] Started loading application interaction command handler.');
 
         // Create a new table.
@@ -74,17 +74,17 @@ const loadAppCmds = (client) =>
 
                     // Finally split slashCommands into separate categories.
                     switch (slashCommand.guild) {
-                        case GuildNames.GLOBAL: {
+                        case GuildEnums.GLOBAL: {
                             appCommands.GLOBAL.push(slashCommand.data.toJSON());
                             tableAddRow(slashCommand, file);
                             break;
                         }
-                        case GuildNames.TEA: {
+                        case GuildEnums.TEA: {
                             appCommands.TEA.push(slashCommand.data.toJSON());
                             tableAddRow(slashCommand, file);
                             break;
                         }
-                        case GuildNames.TEST: {
+                        case GuildEnums.TEST: {
                             appCommands.TEST.push(slashCommand.data.toJSON());
                             tableAddRow(slashCommand, file);
                             break;
@@ -117,6 +117,7 @@ const loadAppCmds = (client) =>
 
         log.debug('🆗 [LOAD COMMANDS] Finished loading application interaction command handler.');
     });
+}
 
 // Create rest variable for application slash command registry.
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_APP_TOKEN);
@@ -133,7 +134,7 @@ async function registerGuildCmds(commands, guildID, friendlyName) {
     return new Promise((resolve, reject) => {
         log.debug(`[REGISTER GUILD COMMANDS] Started refreshing '${friendlyName}' specific application guild commands.`);
 
-        setTimeout(async () => { // 5 seconds timeout for each command registry API request.
+        setTimeout(async () => { // 1 seconds timeout for each command registry API request.
             try {
                 if (!guildID || !friendlyName) throw new Error('Missing required parameters to register specific application guild commands.');
                 await rest.put(
@@ -145,10 +146,9 @@ async function registerGuildCmds(commands, guildID, friendlyName) {
             } catch (err) {
                 reject(`[REGISTER GUILD COMMANDS] Error to refresh '${friendlyName}' specific application guild commands: ${err.message}`);
             }
-        }, 2000);
+        }, 1000);
     });
 }
-
 
 /**
  * Refreshes global interaction commands.
@@ -174,5 +174,9 @@ const registerGlobalCmds = commands =>
         })();
     });
 
-
-module.exports = { loadAppCmds, registerGuildCmds, registerGlobalCmds, appCommands };
+module.exports = {
+    loadAppCmds,
+    registerGuildCmds,
+    registerGlobalCmds,
+    appCommands
+};
