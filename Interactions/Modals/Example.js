@@ -10,7 +10,7 @@ async function showExampleModal(interaction) {
 
     // Make a modal using the discord builder module.
     try {
-        // Destructuring assignment
+        // Destructuring assignment.
         const { user, guild } = interaction;
 
         // Log who used the command.
@@ -69,7 +69,7 @@ module.exports = {
     async execute(interaction, args) { // That handles the interation submit response.
 
         try {
-            // Destructuring assignment
+            // Destructuring assignment.
             const { user, guild } = interaction;
 
             // Log who used the command.
