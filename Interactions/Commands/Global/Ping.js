@@ -1,29 +1,35 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const log = require('../../../Addons/Logger');
+const path = require('path');
 const { GuildNames } = require('../../../Addons/GuildNames');
-const { findEmoji } = require('../../../Addons/findEmoji');
+const { EmojiEnums } = require('../../../Addons/Enums');
+const { InteractionError } = require('../../../Addons/Classes');
 
 // Constants
 const PING_THRESHOLD = [130, 250];
 const STATUS_EMOJIS = ['✨', '🆗', '❗'];
 
+// Get file name.
+const fileName = path.basename(__filename).slice(0, -3).toLowerCase();
+
 module.exports = {
 	enabled: false,
 	guild: GuildNames.GLOBAL,
 	data: new SlashCommandBuilder()
-		.setName('ping')
+		.setName(fileName)
 		.setDescription('Returns websocket connection ping.')
 		.setDMPermission(false),
 
 	async execute(interaction) {
-		const { user, guild } = interaction;
-
-		// Log who used the command.
-		log.info(`[/PING] Command used by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
-
 		try {
+			// Destructuring assignment
+			const { user, guild } = interaction;
+
+			// Log who used the command.
+			log.info(`[/${fileName}] Command used by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
+
 			// Send a reply to the user.
-			const reply = await interaction.reply({ content: `${findEmoji(interaction.client, 'loading')} Checking ping...`, ephemeral: true });
+			const reply = await interaction.reply({ content: `${EmojiEnums.LOADING} Checking ping...`, ephemeral: true });
 
 			// Fake 2s delay to appear as if the bot is doing something 😂
 			await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -44,31 +50,12 @@ module.exports = {
 			// Example: if ping is 250 and above, statusIndex will be -1, and status will be '❗'
 
 			// Send a reply with the appropriate status.
-			await interactionResponse(status, ping, reply);
+			await reply.edit({
+				content: `> ${status} Websocket latency is **${ping}** ms.`,
+			});
 
 		} catch (error) {
-			log.bug('[/PING] Interaction error:', error);
-
-			// Send an error message to the user.
-			await interaction.editReply({
-				content: '🥶 Something went wrong with this interaction. Please try again later.',
-				ephemeral: true
-			}).catch((editError) => log.bug(`[/PING] Error editing interaction reply: ${editError}`));
+			new InteractionError(interaction, fileName).issue(error);
 		}
 	}
 };
-
-/**
- * Function to send an interaction reply response.
- * @param {String} status The status emoji to use.
- * @param {Number} ping The websocket ping.
- * @param {Object} reply The interaction reply object.
- * @returns {Promise<void>}
- */
-async function interactionResponse(status, ping, reply) {
-	await reply.edit({
-		content: `> ${status} Websocket latency is **${ping}** ms.`,
-	}).catch((error) => {
-		log.bug(`[/PING] Error editing interaction reply: ${error}`);
-	});
-}

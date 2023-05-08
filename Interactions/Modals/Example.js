@@ -1,13 +1,24 @@
 const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require('discord.js');
 const log = require('../../Addons/Logger');
+const path = require('path');
+const { InteractionError } = require('../../Addons/Classes');
+
+// Get file name.
+const fileName = path.basename(__filename).slice(0, -3);
 
 async function showExampleModal(interaction) {
 
     // Make a modal using the discord builder module.
     try {
+        // Destructuring assignment
+        const { user, guild } = interaction;
+
+        // Log who used the command.
+        log.info(`[/${fileName}] Interaction modal used by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
+
         // Create the modal
         const exampleModal = new ModalBuilder()
-            .setCustomId('exampleModal')
+            .setCustomId(fileName)
             .setTitle('My example modal');
 
         // Create the text input components
@@ -46,25 +57,24 @@ async function showExampleModal(interaction) {
         await interaction.showModal(exampleModal);
 
     } catch (error) {
-        // Catch any potential errors.
-        log.bug('[exampleModal] Interaction error:', error);
-
-        // Send an error message to the user.
-        await interaction.reply({
-            content: '🥶 Something went wrong with this interaction. Please try again later.',
-            ephemeral: true
-        }).catch((editError) => log.bug('[exampleModal] Error sending interaction reply:', editError));
+        new InteractionError(interaction, fileName).issue(error);
     }
 }
 
 // Export logic that will be executed when the modal is submitted.
 module.exports = {
     enabled: false,
-    name: 'exampleModal',
+    name: fileName,
     showExampleModal, // Function to show modal to the user. Used on different files as: showExampleModal(interaction)
     async execute(interaction, args) { // That handles the interation submit response.
 
         try {
+            // Destructuring assignment
+            const { user, guild } = interaction;
+
+            // Log who used the command.
+            log.info(`[/${fileName}] Interaction modal executed by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
+
             // Log user arguments to the console.
             log.info(args);
 
@@ -72,8 +82,7 @@ module.exports = {
             await interaction.reply({ content: 'You submitted the example modal!', ephemeral: true });
 
         } catch (error) {
-            // Catch any potential errors.
-            log.bug('[exampleModal] Error to run this modal:', error);
+            new InteractionError(interaction, fileName).issue(error);
         }
     }
 };
