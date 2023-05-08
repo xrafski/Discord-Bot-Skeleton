@@ -1,71 +1,41 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { ButtonBuilder, ButtonStyle } = require('discord.js');
 const log = require('../../../../Addons/Logger');
+const path = require('path');
 const { showNorthClubApplyModal } = require('../../../Modals/Guild/NORTH/northClubApplyModal');
-const { findEmoji, emojiList } = require('../../../../Addons/findEmoji');
+const { NorthEnums } = require('../../../../Addons/TempEnums');
+const { InteractionError } = require('../../../../Addons/Classes');
+const { EmojiEnums } = require('../../../../Addons/Enums');
 
-// Variables
-const northMemberRoleID = '288385193285386248';
+// Get file name.
+const fileName = path.basename(__filename).slice(0, -3);
 
-const builder = new ButtonBuilder()
-    .setCustomId('northClubApplyButton')
+const northClubApplyButtonBuilder = new ButtonBuilder()
+    .setCustomId(fileName)
     .setLabel('Apply')
     .setEmoji('📝')
     .setStyle(ButtonStyle.Primary);
 
-/**
- * Sends a new message with a "THE NORTH Club Apply" button component in interaction channel.
- *
- * @param {import("discord.js").CommandInteraction} interaction - The interaction object.
- * @returns {Promise<void>} A Promise that resolves when the button is added successfully, or rejects if an error occurs.
- */
-async function addnorthClubApplyButton(interaction) {
-
-    // Make a button using the discord builder module.
-    try {
-        const row = new ActionRowBuilder()
-            .addComponents(
-                builder
-            );
-        // Add component to existing message.
-        await interaction.channel.send({ components: [row] });
-
-    } catch (error) {
-        // Catch any potential errors.
-        log.bug('[northClubApplyButton] Interaction button error:', error);
-
-        // Send an error message to the user.
-        await interaction.reply({
-            content: '🥶 Something went wrong with this interaction. Please try again later.',
-            ephemeral: true
-        }).catch((editError) => log.bug(`[northClubApplyButton] Error sending interaction reply: ${editError}`));
-    }
-}
-
 module.exports = {
     enabled: true,
-    name: 'northClubApplyButton',
-    builder,
-    addnorthClubApplyButton,
+    name: fileName,
+    builder: northClubApplyButtonBuilder,
     async execute(interaction) { // Logic when user interact with this button.
 
         try {
+            // Log who executed this interaction.
+            log.info(`[${fileName}] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
+
             // Check if interaction user is already a club member.
             const member = await interaction.guild.members.fetch(interaction.user.id);
-            if (member.roles.cache.has(northMemberRoleID)) {
-                return interaction.reply({ content: `${findEmoji(interaction.client, emojiList.verify)} You are already a club member of **THE NORTH**!`, ephemeral: true });
+            if (member.roles.cache.has(NorthEnums.roles.MEMBER_ID)) {
+                return interaction.reply({ content: `${EmojiEnums.VERIFY} You are already a club member of **THE NORTH**!`, ephemeral: true });
             }
 
-            // Display THE NORTH club application modal to the user.
+            // Display club application modal to the user.
             showNorthClubApplyModal(interaction);
 
         } catch (error) {
-            log.bug('[laezClubApplyButton] Interaction button error', error);
-
-            // Send an error message to the user.
-            await interaction.reply({
-                content: '🥶 Something went wrong with this interaction. Please try again later.',
-                ephemeral: true
-            }).catch((responseError) => log.bug('[laezClubApplyButton] Error editing interaction reply:', responseError));
+            new InteractionError(interaction, fileName).issue(error);
         }
     }
 };

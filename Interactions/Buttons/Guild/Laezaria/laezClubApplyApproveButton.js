@@ -1,59 +1,30 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
+const { ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
 const log = require('../../../../Addons/Logger');
-const { findEmoji, emojiList } = require('../../../../Addons/findEmoji');
+const path = require('path');
+const { LaezariaEnums } = require('../../../../Addons/TempEnums');
+const { InteractionError } = require('../../../../Addons/Classes');
+const { EmojiEnums } = require('../../../../Addons/Enums');
 
-// Variables
-const laezMemberRoleID = '1099703236983791698';
-const approvedIcon = 'https://i.imgur.com/DQwdu0u.png';
+// Get file name.
+const fileName = path.basename(__filename).slice(0, -3);
 
 // Button builder for Laezaria's approve button.
 const laezClubApplyApproveButtonBuilder = new ButtonBuilder()
-    .setCustomId('laezClubApplyApproveButton')
+    .setCustomId(fileName)
     .setLabel('Approve')
     .setStyle(ButtonStyle.Success);
 
-/**
- * Sends a new message with a "Laezaria Club Apply" button component in interaction channel.
- *
- * @param {import("discord.js").CommandInteraction} interaction - The interaction object.
- * @returns {Promise<void>} A Promise that resolves when the button is added successfully, or rejects if an error occurs.
- */
-async function addlaezClubApplyApproveButton(interaction) {
-
-    try {
-        // Make a button using the discord builder module.
-        const row = new ActionRowBuilder()
-            .addComponents(
-                laezClubApplyApproveButtonBuilder
-            );
-
-        // Send a message with the button component.
-        await interaction.channel.send({ components: [row] });
-
-    } catch (error) { // Catch any potential errors.
-        log.bug('[laezClubApplyApproveButton] Interaction button error:', error);
-
-        // Send an error message to the user.
-        await interaction.reply({
-            content: '🥶 Something went wrong with this interaction. Please try again later.',
-            ephemeral: true
-        }).catch((editError) => log.bug('[laezClubApplyApproveButton] Error sending interaction reply:', editError));
-    }
-}
-
 module.exports = {
     enabled: true,
-    name: 'laezClubApplyApproveButton',
+    name: fileName,
     laezClubApplyApproveButtonBuilder,
-    addlaezClubApplyApproveButton,
     async execute(interaction) { // Logic when user interact with this button.
-
         try {
             // Log who used this interaction.
-            log.info(`[laezClubApplyApproveButton] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
+            log.info(`[${fileName}] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
             // Create reply to defer the button execution.
-            await interaction.reply({ content: `${findEmoji(interaction.client, emojiList.loading)} Preparing response...`, ephemeral: true });
+            await interaction.reply({ content: `${EmojiEnums.LOADING} Preparing response...`, ephemeral: true });
 
             // Variable with original embed data.
             const originalEmbed = await interaction.message.embeds[0];
@@ -61,9 +32,9 @@ module.exports = {
             // Get a new embed instance for this interaction message.
             const newEmbed = new EmbedBuilder()
                 .setTitle(originalEmbed.title)
-                .setDescription(`${findEmoji(interaction.client, emojiList.approve)} Request is **CLOSED** and approved by ${interaction.user}.`)
+                .setDescription(`${EmojiEnums.APPROVE} Request is **CLOSED** and approved by ${interaction.user}.`)
                 .setColor('Green') // https://discord.js.org/#/docs/discord.js/main/typedef/ColorResolvable
-                .setImage(approvedIcon)
+                .setImage(LaezariaEnums.APPROVED_URL)
                 .setThumbnail(originalEmbed.thumbnail.url)
                 .setFooter(originalEmbed.footer)
                 .setTimestamp()
@@ -72,15 +43,15 @@ module.exports = {
             // Change applicant server's nickname and assign a member role.
             const userMember = await interaction.guild.members.fetch(newEmbed.data.footer.text);
             await userMember.setNickname(newEmbed.data.fields[2].value.replace(/`/g, '')); // Get field value with a nickname and remove backticks.
-            await userMember.roles.add(laezMemberRoleID);
+            await userMember.roles.add(LaezariaEnums.MEMBER_ROLE_ID);
 
             // Send user a Direct Message with the request response status.
             const dmEmbed = new EmbedBuilder()
                 .setTitle('Application Response!')
-                .setDescription(`Your Application to **Laezaria** has been approved ${findEmoji(interaction.client, emojiList.approve)}\nAccepted by: ${interaction.user}!`)
+                .setDescription(`Your Application to **Laezaria** has been approved ${EmojiEnums.APPROVE}\nAccepted by: ${interaction.user}!`)
                 .setColor('Green')
                 .setAuthor({ name: interaction.client.user.username, iconURL: interaction.client.user.displayAvatarURL() })
-                .setImage(approvedIcon);
+                .setImage(LaezariaEnums.APPROVED_URL);
 
             // Boolean variable to indicate whether direct message is received or not.
             let dmSentBoolean = true;
@@ -105,12 +76,7 @@ module.exports = {
                 });
 
         } catch (error) { // Catch any potential errors.
-            log.bug('[laezClubApplyApproveButton] Interaction button error', error);
-
-            // Send an error message to the user.
-            await interaction.editReply({
-                content: '🥶 Something went wrong with this interaction. Please try again later.',
-            }).catch((responseError) => log.bug('[laezClubApplyApproveButton] Error editing interaction reply:', responseError));
+            new InteractionError(interaction, fileName).issue(error);
         }
     }
 };

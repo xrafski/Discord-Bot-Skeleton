@@ -1,66 +1,37 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
 const log = require('../../../../Addons/Logger');
+const path = require('path');
 const { northClubApplyConfirmInviteButtonBuilder } = require('../NORTH/northClubApplyConfirmInviteButton');
 const { northClubApplyRequestInviteButtonBuilder } = require('../NORTH/northClubApplyRequestInviteButton');
-const { findEmoji, emojiList } = require('../../../../Addons/findEmoji');
+const { InteractionError } = require('../../../../Addons/Classes');
+const { EmojiEnums } = require('../../../../Addons/Enums');
+const { NorthEnums } = require('../../../../Addons/TempEnums');
 
-// Variables
-const grandcounsilRoleID = '1104437369559601244';
-const devRoleID = '1104437516154712064';
-const adminRoleID = '1104437669951438879';
+// Get file name.
+const fileName = path.basename(__filename).slice(0, -3);
 
 // Button builder for THE NORTH's approve button.
 const northClubApplyApproveButtonBuilder = new ButtonBuilder()
-    .setCustomId('northClubApplyApproveButton')
+    .setCustomId(fileName)
     .setLabel('Approve')
     .setStyle(ButtonStyle.Success);
 
-/**
- * Sends a new message with a "THE NORTH Club Apply" button component in interaction channel.
- *
- * @param {import("discord.js").CommandInteraction} interaction - The interaction object.
- * @returns {Promise<void>} A Promise that resolves when the button is added successfully, or rejects if an error occurs.
- */
-async function addNorthClubApplyApproveButton(interaction) {
-
-    try {
-        // Make a button using the discord builder module.
-        const row = new ActionRowBuilder()
-            .addComponents(
-                northClubApplyApproveButtonBuilder
-            );
-
-        // Send a message with the button component.
-        await interaction.channel.send({ components: [row] });
-
-    } catch (error) {
-        log.bug('[northClubApplyApproveButton] Interaction button error:', error);
-
-        // Send an error message to the user.
-        await interaction.reply({
-            content: '🥶 Something went wrong with this interaction. Please try again later.',
-            ephemeral: true
-        }).catch((editError) => log.bug('[northClubApplyApproveButton] Error sending interaction reply:', editError));
-    }
-}
-
 module.exports = {
     enabled: true,
-    name: 'northClubApplyApproveButton',
+    name: fileName,
     northClubApplyApproveButtonBuilder,
-    addNorthClubApplyApproveButton,
     async execute(interaction) {// Logic when user interact with this button
 
         try {
             // Log who used this interaction.
-            log.info(`[northClubApplyApproveButton] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
+            log.info(`[${fileName}] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
             // Create reply to defer the button execution.
-            const reply = await interaction.reply({ content: `${findEmoji(interaction.client, emojiList.loading)} Preparing response...`, ephemeral: true });
+            const reply = await interaction.reply({ content: `${EmojiEnums.LOADING} Preparing response...`, ephemeral: true });
 
             // Check if interactor has the necessary permissions to interact with this button
             const member = await interaction.guild.members.fetch(interaction.user.id);
-            if (!member.roles.cache.has(grandcounsilRoleID) && !member.roles.cache.has(devRoleID) && !member.roles.cache.has(adminRoleID)) {
+            if (!member.roles.cache.has(NorthEnums.roles.GRANDCOUSIL_ID) && !member.roles.cache.has(NorthEnums.roles.DEV_ID) && !member.roles.cache.has(NorthEnums.roles.ADMIN_ID)) {
                 return reply.edit({ content: 'You are not authorised to perform this action!', ephemeral: true });
             }
 
@@ -70,7 +41,7 @@ module.exports = {
             // Get a new embed instance for this interaction message.
             const newEmbed = new EmbedBuilder()
                 .setTitle('Application awaiting for confirmation')
-                .setDescription(`${findEmoji(interaction.client, emojiList.approve)} Request is **APPROVED**\nApproved by ${interaction.user}`)
+                .setDescription(`${EmojiEnums.APPROVE} Request is **APPROVED**\nApproved by ${interaction.user}`)
                 .setColor('Orange')
                 .setImage(originalEmbed.image.url)
                 .setThumbnail(originalEmbed.thumbnail.url)
@@ -122,12 +93,7 @@ module.exports = {
                 });
 
         } catch (error) { // Catch any potential errors.
-            log.bug('[northClubApplyApproveButton] Interaction button error', error);
-
-            // Send an error message to the user.
-            await interaction.editReply({
-                content: '🥶 Something went wrong with this interaction. Please try again later.',
-            }).catch((responseError) => log.bug('[northClubApplyApproveButton] Error editing interaction reply:', responseError));
+            new InteractionError(interaction, fileName).issue(error);
         }
     }
 };

@@ -1,19 +1,21 @@
 const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js');
 const log = require('../../../../Addons/Logger');
+const path = require('path');
 const { laezClubApplyApproveButtonBuilder } = require('../../../Buttons/Guild/Laezaria/laezClubApplyApproveButton');
 const { laezClubApplyRejectButtonBuilder } = require('../../../Buttons/Guild/Laezaria/laezClubApplyRejectButton');
-const { findEmoji, emojiList } = require('../../../../Addons/findEmoji');
+const { InteractionError } = require('../../../../Addons/Classes');
+const { LaezariaEnums } = require('../../../../Addons/TempEnums');
+const { EmojiEnums } = require('../../../../Addons/Enums');
 
-// Variables
-const failedProofImage = 'https://i.imgur.com/ReMlAhB.png';
-const inboxChannelID = '1103770722586853518';
+// Get file name.
+const fileName = path.basename(__filename).slice(0, -3);
 
 async function showLaezClubApplyModal(interaction) {
-    // Log who used this interaction.
-    log.info(`[laezClubApplyModal] Interaction used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
-
     // Make a modal using the discord builder module.
     try {
+        // Log who used this interaction.
+        log.info(`[${fileName}] Interaction used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
+
         // Create the modal
         const laezClubApplyModalBuilder = new ModalBuilder()
             .setCustomId('laezClubApplyModal')
@@ -78,21 +80,14 @@ async function showLaezClubApplyModal(interaction) {
         await interaction.showModal(laezClubApplyModalBuilder);
 
     } catch (error) {
-        // Catch any potential errors.
-        log.bug('[laezClubApplyModal] Interaction error:', error);
-
-        // Send an error message to the user.
-        await interaction.reply({
-            content: '🥶 Something went wrong with this interaction. Please try again later.',
-            ephemeral: true
-        }).catch((editError) => log.bug('[laezClubApplyModal] Error sending interaction reply:', editError));
+        new InteractionError(interaction, fileName).issue(error);
     }
 }
 
 // Export logic that will be executed when the modal is submitted.
 module.exports = {
     enabled: true,
-    name: 'laezClubApplyModal',
+    name: fileName,
     showLaezClubApplyModal, // Function to show modal to the user. Used on different files as: showLaezClubApplyModal(interaction)
     async execute(interaction, args) { // That handles the interation submit response.
 
@@ -107,7 +102,7 @@ module.exports = {
 
         try {
             // Log who executed this interaction.
-            log.info(`[laezClubApplyModal] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
+            log.info(`[${fileName}] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
             const [nickname, powerRank, masteryRank, whyJoin, proofImage] = args; // Destructuring assignment
             const userResponses = { nickname, powerRank, masteryRank, whyJoin, proofImage }; // Object with user responses provided within the modal.
@@ -115,14 +110,14 @@ module.exports = {
 
             // If isImage() returns false for proofImage.
             if (isImage(imgProofImage) === false) {
-                imgProofImage = failedProofImage; // Set the proofImage to the default failure image.
+                imgProofImage = LaezariaEnums.FAILED_PROOF_URL; // Set the proofImage to the default failure image.
             }
 
             // An embed builder to gather all information about the applicant and its responses for the guild staff members.
             const applicationEmbed = new EmbedBuilder()
                 .setTitle('Application to join Laezaria')
-                .setDescription(`${findEmoji(interaction.client, emojiList.loading)} Request is **OPEN** and awaiting staff approval.`)
-                .setColor('Yellow') // https://discord.js.org/#/docs/discord.js/main/typedef/ColorResolvable
+                .setDescription(`${EmojiEnums.LOADING} Request is **OPEN** and awaiting staff approval.`)
+                .setColor('Yellow')
                 .setImage(imgProofImage)
                 .setThumbnail(interaction.user.displayAvatarURL())
                 .setTimestamp()
@@ -164,11 +159,12 @@ module.exports = {
             const staffApplicationActionRow = new ActionRowBuilder()
                 .addComponents(laezClubApplyApproveButtonBuilder, laezClubApplyRejectButtonBuilder);
 
-
             // Get the channel object where to send the application message.
-            const inboxChannel = interaction.guild.channels.cache.get(inboxChannelID);
+            const inboxChannel = interaction.guild.channels.cache.get(LaezariaEnums.INBOX_CHANNEL_ID);
+
             // Throw exception if channel is not found.
-            if (!inboxChannel) throw new Error(`inboxChannel variable returns undefined which means this channel ID '${inboxChannelID}' is either invalid or has been removed from this guild.`);
+            if (!inboxChannel) throw new Error(`inboxChannel variable returns undefined which means this channel ID '${LaezariaEnums.INBOX_CHANNEL_ID}' is either invalid or has been removed from this guild.`);
+
             // Send message with the embed and button components to accept or reject the application.
             await inboxChannel.send({ embeds: [applicationEmbed], components: [staffApplicationActionRow] });
 
@@ -176,7 +172,7 @@ module.exports = {
             await interaction.reply({ content: '**You submitted application to the club!**\nNow you need to wait for a staff member to either approve or reject your request.', ephemeral: true });
 
         } catch (error) { // Catch any potential errors.
-            log.bug('[laezClubApplyModal] Error to execute this modal:', error);
+            new InteractionError(interaction, fileName).issue(error);
         }
     }
 };

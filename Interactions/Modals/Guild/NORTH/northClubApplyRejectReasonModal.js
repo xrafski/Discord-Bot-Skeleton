@@ -1,13 +1,16 @@
 const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js');
 const log = require('../../../../Addons/Logger');
-const { findEmoji, emojiList } = require('../../../../Addons/findEmoji');
+const path = require('path');
+const { InteractionError } = require('../../../../Addons/Classes');
+const { NorthEnums } = require('../../../../Addons/TempEnums');
+const { EmojiEnums } = require('../../../../Addons/Enums');
 
-// Variables
-const rejectedIcon = 'https://i.imgur.com/90HP5c6.png';
+// Get file name.
+const fileName = path.basename(__filename).slice(0, -3);
 
 async function showNorthClubApplyRejectReasonModal(interaction) {
     // Log who used this interaction.
-    log.info(`[northClubApplyRejectReasonModal] Interaction used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
+    log.info(`[${fileName}] Interaction used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
     // Make a modal using the discord builder module.
     try {
@@ -16,7 +19,7 @@ async function showNorthClubApplyRejectReasonModal(interaction) {
 
         // Create the modal
         const northClubApplyRejectReasonModalBuilder = new ModalBuilder()
-            .setCustomId('northClubApplyRejectReasonModal')
+            .setCustomId(fileName)
             .setTitle(`Reject ${originalEmbed.fields[2].value.replace(/`/g, '')}'s Application`);
 
         // Create the text input components
@@ -37,14 +40,7 @@ async function showNorthClubApplyRejectReasonModal(interaction) {
         await interaction.showModal(northClubApplyRejectReasonModalBuilder);
 
     } catch (error) {
-        // Catch any potential errors.
-        log.bug('[laezClubApplyRejectReasonModal] Interaction error:', error);
-
-        // Send an error message to the user.
-        await interaction.reply({
-            content: '🥶 Something went wrong with this interaction. Please try again later.',
-            ephemeral: true
-        }).catch((editError) => log.bug('[laezClubApplyRejectReasonModal] Error sending interaction reply:', editError));
+        new InteractionError(interaction, fileName).issue(error);
     }
 }
 
@@ -57,12 +53,12 @@ module.exports = {
 
         try {
             // Log who executed this interaction.
-            log.info(`[northClubApplyRejectReasonModal] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
+            log.info(`[${fileName}] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
             // Create reply to defer the button execution.
-            await interaction.reply({ content: `${findEmoji(interaction.client, emojiList.loading)} Preparing response...`, ephemeral: true });
+            await interaction.reply({ content: `${EmojiEnums.LOADING} Preparing response...`, ephemeral: true });
 
-            // Variables
+            // Vars
             const [reason] = args; // Destructuring assignment
             const userResponses = { reason }; // Object with user responses provided within the modal.
             const originalEmbed = await interaction.message.embeds[0];
@@ -70,16 +66,16 @@ module.exports = {
             // Get a new embed instance for this interaction message.
             const newEmbed = new EmbedBuilder()
                 .setTitle('Application succesfully finished')
-                .setDescription(`${findEmoji(interaction.client, emojiList.reject)} Request is **CLOSED**\nRejected by ${interaction.user}.`)
+                .setDescription(`${EmojiEnums.REJECT} Request is **CLOSED**\nRejected by ${interaction.user}.`)
                 .setColor('Red')
-                .setImage(rejectedIcon)
+                .setImage(NorthEnums.CLUB_LOGO_URL)
                 .setThumbnail(originalEmbed.thumbnail.url)
                 .setFooter(originalEmbed.footer)
                 .setTimestamp()
                 .setFields(originalEmbed.fields);
 
             // Assisng variable with template string for the reject response message.
-            const denyTemplate = `Thank you for the time and effort you put into applying to **THE NORTH**.\nHowever, we regret to inform you that your application has been **denied** ${findEmoji(interaction.client, emojiList.reject)}`;
+            const denyTemplate = `Thank you for the time and effort you put into applying to **THE NORTH**.\nHowever, we regret to inform you that your application has been **denied** ${EmojiEnums.REJECT}`;
 
             // Modify userResponses.reason to include reason for the reject response message if present.
             if (userResponses.reason === '') {
@@ -96,7 +92,7 @@ module.exports = {
                 .setDescription(userResponses.reason)
                 .setColor('Red')
                 .setAuthor({ name: interaction.client.user.username, iconURL: interaction.client.user.displayAvatarURL() })
-                .setImage(rejectedIcon);
+                .setImage(NorthEnums.CLUB_LOGO_URL);
 
             // Boolean variable to indicate whether direct message is received or not.
             let dmSentBoolean = true;
@@ -120,7 +116,7 @@ module.exports = {
                     interaction.editReply({ content: summaryString, ephemeral: true });
                 });
         } catch (error) { // Catch any potential errors.
-            log.bug('[northClubApplyRejectReasonModal] Error to execute this modal:', error);
+            new InteractionError(interaction, fileName).issue(error);
         }
     }
 };

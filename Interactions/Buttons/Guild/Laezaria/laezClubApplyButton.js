@@ -1,72 +1,41 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { ButtonBuilder, ButtonStyle } = require('discord.js');
 const log = require('../../../../Addons/Logger');
+const path = require('path');
 const { showLaezClubApplyModal } = require('../../../Modals/Guild/Laezaria/laezClubApplyModal');
-const { findEmoji, emojiList } = require('../../../../Addons/findEmoji');
+const { LaezariaEnums } = require('../../../../Addons/TempEnums');
+const { InteractionError } = require('../../../../Addons/Classes');
+const { EmojiEnums } = require('../../../../Addons/Enums');
 
-// Variables
-const laezariaMemberRoleID = '1099703236983791698';
+// Get file name.
+const fileName = path.basename(__filename).slice(0, -3);
 
-const builder = new ButtonBuilder()
-    .setCustomId('laezClubApplyButton')
+const laezClubApplyButtonBuilder = new ButtonBuilder()
+    .setCustomId(fileName)
     .setLabel('Apply to the club!')
     .setEmoji('📝')
     .setStyle(ButtonStyle.Primary);
 
-/**
- * Sends a new message with a "Laezaria Club Apply" button component in interaction channel.
- *
- * @param {import("discord.js").CommandInteraction} interaction - The interaction object.
- * @returns {Promise<void>} A Promise that resolves when the button is added successfully, or rejects if an error occurs.
- */
-async function addLaezClubApplyButton(interaction) {
-
-    // Make a button using the discord builder module.
-    try {
-        const row = new ActionRowBuilder()
-            .addComponents(
-                builder
-            );
-
-        // Add component to existing message.
-        await interaction.channel.send({ components: [row] });
-
-    } catch (error) {
-        // Catch any potential errors.
-        log.bug('[laezClubApplyButton] Interaction button error:', error);
-
-        // Send an error message to the user.
-        await interaction.reply({
-            content: '🥶 Something went wrong with this interaction. Please try again later.',
-            ephemeral: true
-        }).catch((editError) => log.bug(`[laezClubApplyButton] Error sending interaction reply: ${editError}`));
-    }
-}
-
 module.exports = {
     enabled: true,
-    name: 'laezClubApplyButton',
-    builder,
-    addLaezClubApplyButton,
+    name: fileName,
+    builder: laezClubApplyButtonBuilder,
     async execute(interaction) { // Logic when user interact with this button.
 
         try {
+            // Log who used this interaction.
+            log.info(`[${fileName}] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
+
             // Check if interaction user is already a club member.
             const member = await interaction.guild.members.fetch(interaction.user.id);
-            if (member.roles.cache.has(laezariaMemberRoleID)) {
-                return interaction.reply({ content: `${findEmoji(interaction.client, emojiList.verify)} You are already a club member of **Laezaria**!`, ephemeral: true });
+            if (member.roles.cache.has(LaezariaEnums.MEMBER_ROLE_ID)) {
+                return interaction.reply({ content: `${EmojiEnums.VERIFY} You are already a club member of **Laezaria**!`, ephemeral: true });
             }
 
             // Dislay the laezaria club application modal to the user.
             showLaezClubApplyModal(interaction);
 
         } catch (error) {
-            log.bug('[laezClubApplyButton] Interaction button error', error);
-
-            // Send an error message to the user.
-            await interaction.reply({
-                content: '🥶 Something went wrong with this interaction. Please try again later.',
-                ephemeral: true
-            }).catch((responseError) => log.bug('[laezClubApplyButton] Error editing interaction reply:', responseError));
+            new InteractionError(interaction, error).issue(error);
         }
     }
 };
