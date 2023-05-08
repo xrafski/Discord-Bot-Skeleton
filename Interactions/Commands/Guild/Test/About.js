@@ -1,35 +1,36 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { GuildNames } = require('../../../../Addons/GuildNames');
 const log = require('../../../../Addons/Logger');
-const { findEmoji, emojiList } = require('../../../../Addons/findEmoji');
+const path = require('path');
+const { GuildNames } = require('../../../../Addons/GuildNames');
+const { EmojiEnums } = require('../../../../Addons/Enums');
+const { InteractionError } = require('../../../../Addons/Classes');
+
+// Get file name.
+const fileName = path.basename(__filename).slice(0, -3).toLowerCase();
 
 module.exports = {
-    enabled: true,
+    enabled: false,
     guild: GuildNames.TEST,
     data: new SlashCommandBuilder()
-        .setName('about')
+        .setName(fileName)
         .setDescription('About test club'),
 
     async execute(interaction) {
-        const { user, guild } = interaction;
-
-        // Log who used the command.
-        log.info(`[/ABOUT] Command used by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
-
         try {
+            // Destructuring assignment
+            const { user, guild } = interaction;
+
+            // Log who used the command.
+            log.info(`[/${fileName}] Command used by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
+
             // Create reply to defer the command execution.
-            const reply = await interaction.reply({ content: `${findEmoji(interaction.client, emojiList.loading)} Preparing reseponse...`, ephemeral: true });
+            const reply = await interaction.reply({ content: `${EmojiEnums.LOADING} Preparing reseponse...`, ephemeral: true });
 
             // Edit the reply to indicate success.
-            await reply.edit({ content: `${findEmoji(interaction.client, emojiList.loading)} This is a test command for a test development server!` });
-        } catch (error) {
-            log.bug('[/ABOUT] Interaction error:', error);
+            await reply.edit({ content: `${EmojiEnums.LOADING} This is a test command for a test development server!` });
 
-            // Send an error message to the user.
-            await interaction.editReply({
-                content: '🥶 Something went wrong with this interaction. Please try again later.',
-                ephemeral: true
-            }).catch((editError) => log.bug('[/ABOUT] Error editing interaction reply:', editError));
+        } catch (error) {
+            new InteractionError(interaction, fileName).issue(error);
         }
     },
 };
