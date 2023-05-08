@@ -44,4 +44,4 @@ const eventHandler = client =>
 	});
 
 
-module.exports = { eventHandler };
+module.exports = eventHandler;

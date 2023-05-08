@@ -75,4 +75,4 @@ const loadAppButtons = (client) =>
         log.debug('🆗 [LOAD BUTTONS] Finished loading application interaction button handler.');
     });
 
-module.exports = { loadAppButtons };
+module.exports = loadAppButtons;
