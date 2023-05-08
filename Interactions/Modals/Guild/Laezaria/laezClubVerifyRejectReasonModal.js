@@ -2,16 +2,18 @@ const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, EmbedB
 const log = require('../../../../Addons/Logger');
 const { findEmoji, emojiList } = require('../../../../Addons/findEmoji');
 const path = require('path');
+const { LaezariaEnums } = require('../../../../Addons/TempEnums');
 
-// Variables
+// Get file name.
 const fileName = path.basename(__filename).slice(0, -3);
 
 async function showLaezClubVerifyRejectReasonModal(interaction) {
-    // Log who used this interaction.
-    log.info(`[${fileName}] Interaction used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
     // Make a modal using the discord builder module.
     try {
+        // Log who used this interaction.
+        log.info(`[${fileName}] Interaction used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
+
         // Variable with original embed data
         const originalEmbed = await interaction.message.embeds[0];
 
@@ -37,7 +39,7 @@ async function showLaezClubVerifyRejectReasonModal(interaction) {
         await interaction.showModal(laezClubVerifyRejectReasonModalBuilder);
 
     } catch (error) {
-            log.bug(`[${fileName}] Error to execute this modal:`, error);
+        log.bug(`[${fileName}] Error to execute this modal:`, error);
     }
 }
 
@@ -47,13 +49,13 @@ module.exports = {
     name: fileName,
     showLaezClubVerifyRejectReasonModal, // Function to show modal to the user. Used on different files as: showLaezClubVerifyRejectReasonModal(interaction)
     async execute(interaction, args) { // That handles the interaction submit response
-        
+
         try {
             // Log who executed this interaction.
             log.info(`[${fileName}] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
             // Create reply to defer the button execution.
-            await interaction.reply({ content: `${findEmoji(interaction.client, emojiList.loading)} Preparing response...`, ephemeral: true });
+            const reply = await interaction.reply({ content: `${findEmoji(interaction.client, emojiList.loading)} Preparing response...`, ephemeral: true });
 
             // Variables
             const [reason] = args; // Destructuring assignment
@@ -64,8 +66,8 @@ module.exports = {
             const newEmbed = new EmbedBuilder()
                 .setTitle(originalEmbed.title)
                 .setDescription(`${findEmoji(interaction.client, emojiList.reject)} Request is **CLOSED** and rejected by ${interaction.user}.`)
-                .setColor('Red') // https://discord.js.org/#/docs/discord.js/main/typedef/ColorResolvable
-                .setImage(rejectedIcon)
+                .setColor('Red')
+                .setImage(LaezariaEnums.REJECTED_URL)
                 .setThumbnail(originalEmbed.thumbnail.url)
                 .setFooter(originalEmbed.footer)
                 .setTimestamp()
@@ -90,7 +92,7 @@ module.exports = {
                 .setDescription(userResponses.reason)
                 .setColor('Red')
                 .setAuthor({ name: interaction.client.user.username, iconURL: interaction.client.user.displayAvatarURL() })
-                .setImage(rejectedIcon);
+                .setImage(LaezariaEnums.REJECTED_URL);
 
             // Boolean variable to indicate whether direct message is received or not.
             let dmSentBoolean = true;
@@ -100,7 +102,7 @@ module.exports = {
                 .catch(() => dmSentBoolean = false); // Change dmSentBoolean variable to false if DM wasn't sent successfully.
 
             // String with summary for user that interacted.
-            let summaryString = `You have rejected ${newEmbed.data.fields[0].value}'s application successfully.`;
+            let summaryString = `You have rejected ${newEmbed.data.fields[0].value}'s verification successfully.`;
 
             // Check if applicant received a direct message and update summary string accordingly.
             if (!dmSentBoolean) {
@@ -108,14 +110,19 @@ module.exports = {
             }
 
             // Replace old embed with a new one and remove components.
-            interaction.message.edit({ embeds: [newEmbed], components: [] })
-                .then(() => {
-                    // Edit initial reply with a summary string.
-                    interaction.editReply({ content: summaryString, ephemeral: true });
-                });
+            await interaction.message.edit({ embeds: [newEmbed], components: [] });
+
+            // Edit initial reply with a summary string.
+            await reply.edit({ content: summaryString, ephemeral: true });
+
 
         } catch (error) {
             log.bug(`[${fileName}] Error to execute this modal:`, error);
+
+            // Send an error message to the user.
+            await interaction.editReply({
+                content: '🥶 Something went wrong with this interaction. Please try again later.',
+            }).catch((responseError) => log.bug(`[${fileName}] Error editing interaction reply:`, responseError));
         }
     }
-}
+};

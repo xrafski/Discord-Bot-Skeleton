@@ -1,68 +1,31 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { ButtonBuilder, ButtonStyle } = require('discord.js');
 const log = require('../../../../Addons/Logger');
 const { showLaezClubVerifyModal } = require('../../../Modals/Guild/Laezaria/laezClubVerifyModal');
-const { findEmoji, emojiList } = require('../../../../Addons/findEmoji');
 const path = require('path');
+const { InteractionError } = require('../../../../Addons/Classes');
 
-// Variables
+// Get file name.
 const fileName = path.basename(__filename).slice(0, -3);
-const laezariaMemberRoleID = '1099703236983791698';
 
 const laezClubVerifyButtonBuilder = new ButtonBuilder()
     .setCustomId(fileName)
-    .setLabel('CHANGEME')
+    .setLabel('Nickname Verification')
     .setStyle(ButtonStyle.Primary);
-
-/**
- * Sends a new message with a "CHANGEME" button component in interaction channel.
- *
- * @param {import("discord.js").CommandInteraction} interaction - The interaction object.
- * @returns {Promise<void>} A Promise that resolves when the button is added successfully, or rejects if an error occurs.
- */
-async function addLaezClubVerifyButton(interaction) {
-    
-    // Make a button using the discord builder module.
-    try {
-        const row = new ActionRowBuilder()
-            .addComponents(
-                laezClubVerifyButtonBuilder
-            );
-        
-        // Add component to existing message.
-        await interaction.channel.send({ components: [row] });
-
-    } catch (error) {
-        // Catch any potential errors.
-        log.bug(`[${fileName}] Interaction button error:`, error);
-
-        // Send an error message to the user.
-        await interaction.reply({
-            content: '🥶 Something went wrong with this interaction. Please try again later.',
-            ephemeral: true
-        }).catch((editError) => log.bug(`[${fileName}] Error sending interaction reply: ${editError}`));
-    }
-}
 
 module.exports = {
     enabled: true,
     name: fileName,
-    laezClubVerifyButtonBuilder,
-    addLaezClubVerifyButton,
+    builder: laezClubVerifyButtonBuilder,
     async execute(interaction) { // Logic when user interact with this button.
 
         try {
-            // Display the laezaria verification modal to the user.
-            showLaezClubVerifyModal
-            
-        } catch (error) {
-        // Catch any potential errors.
-        log.bug(`[${fileName}] Interaction button error:`, error);
+            // Log who used this interaction.
+            log.info(`[${fileName}] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
-        // Send an error message to the user.
-        await interaction.reply({
-            content: '🥶 Something went wrong with this interaction. Please try again later.',
-            ephemeral: true
-        }).catch((editError) => log.bug(`[${fileName}] Error sending interaction reply: ${editError}`));
+            // Display the laezaria verification modal to the user.
+            showLaezClubVerifyModal(interaction);
+        } catch (error) {
+            new InteractionError(interaction, fileName).issue(error);
         }
     }
-}
+};

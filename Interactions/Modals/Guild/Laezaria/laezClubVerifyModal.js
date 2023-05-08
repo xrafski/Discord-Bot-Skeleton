@@ -1,30 +1,32 @@
-const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js');
+const { ModalBuilder, TextInputBuilder, ActionRowBuilder, EmbedBuilder, TextInputStyle } = require('discord.js');
 const log = require('../../../../Addons/Logger');
-const { laezClubVerifyApproveButtonBuilder } = require('../../../Buttons/Guild/NORTH/northClubApplyApproveButton');
-const { laezClubVerifyRejectButtonBuilder } = require('../../../Buttons/Guild/NORTH/northClubApplyRejectButton');
-const { findEmoji, emojiList } = require('../../../../Addons/findEmoji');
+const { laezClubVerifyApproveButtonBuilder } = require('../../../Buttons/Guild/Laezaria/laezClubVerifyApproveButton');
+const { laezClubVerifyRejectButtonBuilder } = require('../../../Buttons/Guild/Laezaria/laezClubVerifyRejectButton');
 const path = require('path');
+const { EmojiEnums } = require('../../../../Addons/Enums');
+const { InteractionError } = require('../../../../Addons/Classes');
+const { LaezariaEnums } = require('../../../../Addons/TempEnums');
 
-// Variables
+// Get file name.
 const fileName = path.basename(__filename).slice(0, -3);
-const failedProofImage = 'https://i.imgur.com/ReMlAhB.png';
-const inboxChannelID = '1103770722586853518';
 
 async function showLaezClubVerifyModal(interaction) {
-    // Log who used this interaction.
-    log.info(`[${fileName}] Interaction used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
     // Make a modal using the discord builder module.
     try {
+        // Log who used this interaction.
+        log.info(`[${fileName}] Interaction used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
+
         // Create the modal
         const laezClubVerifyModalBuilder = new ModalBuilder()
             .setCustomId(fileName)
-            .setTitle('Laezaria IGN Verification')
+            .setTitle('Laezaria IGN Verification');
 
         // Create the text input components
         const laezVerifyQ1Input = new TextInputBuilder()
             .setCustomId('laezVerifyQ1')
             .setLabel('What is your trove in game name?')
+            .setStyle(TextInputStyle.Short)
             .setPlaceholder('Example: Laezaria')
             .setMinLength(3)
             .setMaxLength(20)
@@ -32,22 +34,24 @@ async function showLaezClubVerifyModal(interaction) {
 
         const laezVerifyQ2Input = new TextInputBuilder()
             .setCustomId('laezVerifyQ2')
-            .setLabel('Image link for proof of Laezaria Membership')
+            .setLabel('Image link for proof of Laezaria membership')
+            .setStyle(TextInputStyle.Short)
             .setPlaceholder('See "How to get Image URL" section')
+            .setMaxLength(300)
             .setRequired(true);
 
         // Add inputs to the modal.
-        laezClubVerifyModalbuilder.addComponents(
+        laezClubVerifyModalBuilder.addComponents(
             new ActionRowBuilder().addComponents(laezVerifyQ1Input),
-            new ActionRowBuilder().addComponents(laezVerifyQ2Input),
+            new ActionRowBuilder().addComponents(laezVerifyQ2Input)
         );
 
         // Show the modal to the user.
-        await interaction.showModal(laezClubVerifyApproveButtonBuilder);
-        
+        await interaction.showModal(laezClubVerifyModalBuilder);
+
     } catch (error) { // Catch any potential errors.
         log.bug(`[${fileName}] Error to execute this modal:`, error);
-    
+
         // Send an error message to the user.
         await interaction.reply({
             content: '🥶 Something went wrong with this interaction. Please try again later.',
@@ -60,8 +64,8 @@ async function showLaezClubVerifyModal(interaction) {
 module.exports = {
     enabled: true,
     name: fileName,
-    showLaezClubVerifyModal,  // Function to show modal to the user. Used on different files as: showLaezClubVerifyModal(interaction)
-    async execute(interaction) {
+    showLaezClubVerifyModal, // Function to show modal to the user. Used on different files as: showLaezClubVerifyModal(interaction)
+    async execute(interaction, args) {
 
         /**
          * Checks if a URL is a valid image URL.
@@ -75,21 +79,24 @@ module.exports = {
         try {
             // Log who executed this interaction.
             log.info(`[${fileName}] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
-            
-            const [ nickname, proofImage ] = args; // Destructuring assignment
-            const userResponses = { nickname, proofImage }; // // Object with user responses provided within the modal. 
-            let imgProofImage = userResponses.proofImage; // Set the proofImage to the default failure image.
+
+            // Create reply to defer the button execution.
+            const reply = await interaction.reply({ content: `${EmojiEnums.LOADING} Preparing response...`, ephemeral: true });
+
+            const [nickname, proofImage] = args; // Destructuring assignment
+            const userResponses = { nickname, proofImage }; // // Object with user responses provided within the modal.
+            let imgProofImage = userResponses.proofImage; // Set the proofImage.
 
             // If isImage() returns false for proofImage.
             if (isImage(imgProofImage) === false) {
-                imgProofImage = failedProofImage; // Set the proofImage to the default failure image.
+                imgProofImage = LaezariaEnums.FAILED_PROOF_URL; // Set the proofImage to the default failure image.
             }
 
             // An embed builder to gather all information about the applicant and its responses for the guild staff members.
             const verificationEmbed = new EmbedBuilder()
                 .setTitle('Laezaria IGN Verification')
-                .setDescription(`${findEmoji(interaction.client, emojiList.loading)} Request is **OPEN** and awaiting staff approval.`)
-                .setColor('Yellow') // https://discord.js.org/#/docs/discord.js/main/typedef/ColorResolvable
+                .setDescription(`${EmojiEnums.LOADING} Request is **OPEN** and awaiting staff approval.`)
+                .setColor('Purple') // https://discord.js.org/#/docs/discord.js/main/typedef/ColorResolvable
                 .setImage(imgProofImage)
                 .setThumbnail(interaction.user.displayAvatarURL())
                 .setTimestamp()
@@ -114,25 +121,25 @@ module.exports = {
                         value: `\`\`\`${userResponses.proofImage}\`\`\``
                     }
                 );
-            
+
             // ActionRow with staff buttons to either approve or rejet the user application.
             const staffVerificatinActionRow = new ActionRowBuilder()
-                .addComponents(laezClubVerifyApproveButtonBuilder, laezClubVerifyRejectButtonBuilder)
+                .addComponents(laezClubVerifyApproveButtonBuilder, laezClubVerifyRejectButtonBuilder);
 
             // Get the channel object where to send the application message.
-            const inboxChannel = interaction.guild.channels.cache.get(inboxChannelID)
+            const inboxChannel = interaction.guild.channels.cache.get(LaezariaEnums.INBOX_CHANNEL_ID);
 
             // Throw exception if channel is not found.
-            if (!inboxChannel) throw new Error(`inboxChannel variable returns undefined which means this channel ID '${inboxChannelID}' is either invalid or has been removed from this guild.`);
+            if (!inboxChannel) throw new Error(`inboxChannel variable returns undefined which means this channel ID '${LaezariaEnums.INBOX_CHANNEL_ID}' is either invalid or has been removed from this guild.`);
 
             // Send message with the embed and button components to approve or reject the application.
-            await inboxChannel.send({ embeds: [verificationEmbed], components: [staffVerificatinActionRow] })
+            await inboxChannel.send({ embeds: [verificationEmbed], components: [staffVerificatinActionRow] });
 
             // Send a reply message confirming that the form has been submitted successfully.
-            await interaction.reply({ content: '**You submitted the verification request to the club!**\nNow you need to wait for a staff member to either approve or reject your request.', ephemeral: true });
+            await reply.edit({ content: '**You submitted the verification request to the club!**\nNow you need to wait for a staff member to either approve or reject your request.', ephemeral: true });
 
         } catch (error) {
-            log.bug(`[${fileName}] Error to execute this modal:`, error);
+            new InteractionError(interaction, fileName).issue(error);
         }
     }
-}
+};

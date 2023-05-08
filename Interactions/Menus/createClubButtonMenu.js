@@ -29,6 +29,11 @@ async function addCreateClubButtonMenu(interaction, message) {
                             description: 'Creates a button with application button for THE NORTH Club.',
                             value: 'northClubApplyButton',
                         },
+                        {
+                            label: 'Laezaria Veryfi Button',
+                            description: 'Creates a button with with verification for Laezaria Club.',
+                            value: 'laezClubVerifyButton',
+                        },
                     ]),
             );
 

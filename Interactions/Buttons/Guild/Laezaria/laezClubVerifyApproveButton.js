@@ -1,18 +1,17 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
+const { ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
 const log = require('../../../../Addons/Logger');
-const { findEmoji, emojiList } = require('../../../../Addons/findEmoji');
 const path = require('path');
+const { EmojiEnums } = require('../../../../Addons/Enums');
+const { InteractionError } = require('../../../../Addons/Classes');
+const { LaezariaEnums } = require('../../../../Addons/TempEnums');
 
-// Variables
+// Get file name.
 const fileName = path.basename(__filename).slice(0, -3);
-const laezariaMemberRoleID = '1099703236983791698';
 
 const laezClubVerifyApproveButtonBuilder = new ButtonBuilder()
     .setCustomId(fileName)
     .setLabel('Approve')
-    .setStyle(ButtonStyle.Primary);
-
-// Not creating addLaezClubVerifyApproveButton function because its not needed on its own.
+    .setStyle(ButtonStyle.Success);
 
 module.exports = {
     enabled: true,
@@ -25,7 +24,7 @@ module.exports = {
             log.info(`[${fileName}] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
             // Create reply to defer the button execution.
-            await interaction.reply({ content: `${findEmoji(interaction.client, emojiList.loading)} Preparing response...`, ephemeral: true });
+            await interaction.reply({ content: `${EmojiEnums.LOADING} Preparing response...`, ephemeral: true });
 
             // Variable with original embed data.
             const originalEmbed = await interaction.message.embeds[0];
@@ -33,25 +32,25 @@ module.exports = {
             // Get a new embed instance for this interaction message.
             const newEmbed = new EmbedBuilder()
                 .setTitle(originalEmbed.title)
-                .setDescription(`${findEmoji(interaction.client, emojiList.approve)} Request is **CLOSED** and approved by ${interaction.user}.`)
-                .setColor('Green') // https://discord.js.org/#/docs/discord.js/main/typedef/ColorResolvable
+                .setDescription(`${EmojiEnums.APPROVE} Request is **CLOSED** and approved by ${interaction.user}.`)
+                .setColor('Green')
                 .setThumbnail(originalEmbed.thumbnail.url)
                 .setFooter(originalEmbed.footer)
                 .setTimestamp()
                 .setFields(originalEmbed.fields);
-                
+
             // Change applicant server's nickname and assign a member role.
             const userMember = await interaction.guild.members.fetch(newEmbed.data.footer.text);
             await userMember.setNickname(newEmbed.data.fields[2].value.replace(/`/g, '')); // Get field value with a nickname and remove backticks.
-            await userMember.roles.add(laezariaMemberRoleID);
+            await userMember.roles.add(LaezariaEnums.MEMBER_ROLE_ID);
 
             // Send user a Direct Message with the request response status.
             const dmEmbed = new EmbedBuilder()
                 .setTitle('Verification Request Response!')
-                .setDescription(`Your Verification Request to **Laezaria** has been approved ${findEmoji(interaction.client, emojiList.approve)}\nAccepted by: ${interaction.user}!`)
+                .setDescription(`Your Verification Request to **Laezaria** has been approved ${EmojiEnums.APPROVE}\nAccepted by: ${interaction.user}!`)
                 .setColor('Green')
                 .setAuthor({ name: interaction.client.user.username, iconURL: interaction.client.user.displayAvatarURL() })
-                .setImage(approvedIcon);
+                .setImage(LaezariaEnums.APPROVED_URL);
 
             // Boolean variable to indicate whether direct message is received or not.
             let dmSentBoolean = true;
@@ -75,13 +74,7 @@ module.exports = {
                     interaction.editReply({ content: summaryString, ephemeral: true });
                 });
         } catch (error) { // Catch any potential errors.
-            log.bug(`[${fileName}] Interaction button error`, error);
-
-            // Send an error message to the user.
-            await interaction.editReply({
-                content: '🥶 Something went wrong with this interaction. Please try again later.',
-            }).catch((responseError) => log.bug(`[${fileName}] Error editing interaction reply:`, responseError));
+            new InteractionError(interaction, fileName).issue(error);
         }
-        
     }
-}
+};

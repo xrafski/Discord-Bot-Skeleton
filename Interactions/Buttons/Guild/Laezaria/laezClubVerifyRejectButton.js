@@ -1,18 +1,17 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { ButtonBuilder, ButtonStyle } = require('discord.js');
 const log = require('../../../../Addons/Logger');
 const { showLaezClubVerifyRejectReasonModal } = require('../../../Modals/Guild/Laezaria/laezClubVerifyRejectReasonModal');
 const path = require('path');
+const { InteractionError } = require('../../../../Addons/Classes');
 
-// Variables
-const fileName = path.basename(__filename).slic(0, -3)
+// Get file name.
+const fileName = path.basename(__filename).slice(0, -3);
 
 // Button builder for laezaria's reject button.
 const laezClubVerifyRejectButtonBuilder = new ButtonBuilder()
     .setCustomId(fileName)
     .setLabel('Reject')
     .setStyle(ButtonStyle.Danger);
-
-// Not creating addLaezClubVerifyRejectButton function because its not needed on its own.
 
 module.exports = {
     enabled: true,
@@ -28,13 +27,8 @@ module.exports = {
             showLaezClubVerifyRejectReasonModal(interaction); // Entire logic to reject application is under this reason modal.
 
         } catch (error) {
-            log.bug(`[${fileName}] Interaction button error`, error);
-
-            // Send an error message to the user.
-            await interaction.editReply({
-                content: '🥶 Something went wrong with this interaction. Please try again later.',
-            }).catch((responseError) => log.bug(`[${fileName}] Error editing interaction reply:`, responseError));
+            new InteractionError(interaction, fileName).issue(error);
         }
 
     }
-}
+};
