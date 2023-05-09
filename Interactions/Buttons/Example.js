@@ -1,9 +1,15 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const log = require('../../Addons/Logger');
+const path = require('path');
+const { InteractionError } = require('../../Addons/Classes');
+const { EmojiEnums } = require('../../Addons/Enums');
+
+// Get file name.
+const fileName = path.basename(__filename).slice(0, -3);
 
 const exampleButtonBuilder = new ButtonBuilder()
-    .setCustomId('exampleButton')
-    .setLabel('Click me!')
+    .setCustomId(fileName)
+    .setLabel('Example Button')
     .setStyle(ButtonStyle.Danger);
 
 async function addExampleButton(interaction) {
@@ -12,44 +18,42 @@ async function addExampleButton(interaction) {
     try {
         const row = new ActionRowBuilder()
             .addComponents(
-                new ButtonBuilder()
-                    .setCustomId('exampleButton')
-                    .setLabel('Click me!')
-                    .setStyle(ButtonStyle.Primary),
+                exampleButtonBuilder
             );
 
         // Add component to existing message.
         await interaction.channel.send({ content: '', components: [row] });
 
     } catch (error) {
-        // Catch any potential errors.
-        log.bug('[exampleButton] Interaction button error:', error);
-
-        // Send an error message to the user.
-        await interaction.reply({
-            content: '🥶 Something went wrong with this interaction. Please try again later.',
-            ephemeral: true
-        }).catch((editError) => log.bug(`[exampleButton] Error sending interaction reply: ${editError}`));
+        new InteractionError(interaction, fileName).issue(error);
     }
 }
 
 module.exports = {
     enabled: false,
-    name: 'exampleButton',
-    exampleButtonBuilder, // The example button builder.
+    name: fileName,
+    builder: exampleButtonBuilder, // The example button builder.
     addExampleButton, // Function to add a button component to a provided message object. Used on different files as: addExampleButton(interaction, message)
     async execute(interaction) {
 
         try {
-            await interaction.reply({ content: 'You clicked the example button!\n**Now with additional logic you can do something with it!**', ephemeral: true });
-        } catch (error) {
-            log.bug('[exampleButton] Interaction button error', error);
+            // Destructuring assignment.
+            const { user, guild } = interaction;
 
-            // Send an error message to the user.
-            await interaction.reply({
-                content: '🥶 Something went wrong with this interaction. Please try again later.',
-                ephemeral: true
-            }).catch((responseError) => log.bug(`[exampleButton] Error editing interaction reply: ${responseError}`));
+            // Log who used the command.
+            log.info(`[/${fileName}] Button executed by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
+
+            // Create reply to defer the command execution.
+            const reply = await interaction.reply({ content: `${EmojiEnums.LOADING} Preparing reseponse...`, ephemeral: true });
+
+            // Fake delay to appear as if the bot is doing something 😂
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            // Edit the reply
+            await reply.edit({ content: `${fileName} response is handled correctly.` });
+
+        } catch (error) {
+            new InteractionError(interaction, fileName).issue(error);
         }
     }
 };

@@ -13,7 +13,7 @@ module.exports = {
     guild: GuildEnums.TEA,
     data: new SlashCommandBuilder()
         .setName(fileName)
-        .setDescription('Template command')
+        .setDescription('Example TEA command')
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
     async execute(interaction) {
@@ -22,16 +22,16 @@ module.exports = {
             const { user, guild } = interaction;
 
             // Log who used the command.
-            log.info(`[/${fileName}] Command used by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
-
+            log.info(`[/${fileName}] Command executed by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
 
             // Create reply to defer the command execution.
             const reply = await interaction.reply({ content: `${EmojiEnums.LOADING} Preparing reseponse...`, ephemeral: true });
 
-            // SOME CODE FOR THE COMMAND.
+            // Fake delay to appear as if the bot is doing something 😂
+            await new Promise((resolve) => setTimeout(resolve, 1000));
 
-            // Edit the reply to indicate success.
-            await reply.edit({ content: '✅ Your response is handled correctly.' });
+            // Edit the reply
+            await reply.edit({ content: `${fileName} response is handled correctly.` });
 
         } catch (error) {
             new InteractionError(interaction, fileName).issue(error);

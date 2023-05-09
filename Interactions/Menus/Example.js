@@ -2,9 +2,33 @@ const { ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const log = require('../../Addons/Logger');
 const path = require('path');
 const { InteractionError } = require('../../Addons/Classes');
+const { EmojiEnums } = require('../../Addons/Enums');
 
 // Get file name.
 const fileName = path.basename(__filename).slice(0, -3);
+
+const exampleMenuBuilder = new StringSelectMenuBuilder()
+    .setCustomId(fileName)
+    .setPlaceholder('Nothing selected')
+    .setMinValues(1)
+    .setMaxValues(3)
+    .addOptions([
+        {
+            label: 'First',
+            description: 'This is a description',
+            value: 'first_option',
+        },
+        {
+            label: 'Second',
+            description: 'This is also a description',
+            value: 'second_option',
+        },
+        {
+            label: 'Third',
+            description: 'This is a description as well',
+            value: 'third_option',
+        },
+    ]);
 
 /**
  * Adds a selection menu using the Discord builder module to the specified message.
@@ -16,33 +40,11 @@ async function addExampleMenu(interaction, message) {
 
     // Make a selection menu using the discord builder module.
     try {
-        const row = new ActionRowBuilder()
-            .addComponents(
-                new StringSelectMenuBuilder()
-                    .setCustomId(fileName)
-                    .setPlaceholder('Nothing selected')
-                    .setMinValues(1)
-                    .setMaxValues(3)
-                    .addOptions([
-                        {
-                            label: 'Select me',
-                            description: 'This is a description',
-                            value: 'first_option',
-                        },
-                        {
-                            label: 'You can select me too',
-                            description: 'This is also a description',
-                            value: 'second_option',
-                        },
-                        {
-                            label: 'I am also an option',
-                            description: 'This is a description as well',
-                            value: 'third_option',
-                        },
-                    ]),
-            );
+        const exampleMenuRow = new ActionRowBuilder()
+            .addComponents(exampleMenuBuilder);
 
-        return await message.edit({ components: [row] });
+        // Edit the message's components.
+        await message.edit({ components: [exampleMenuRow] });
 
     } catch (error) {
         new InteractionError(interaction, fileName).issue(error);
@@ -53,18 +55,26 @@ async function addExampleMenu(interaction, message) {
 module.exports = {
     enabled: false,
     name: fileName,
+    builder: exampleMenuBuilder,
     addExampleMenu, // Function to add selection menu component to a provided message object. Used on different files as: addExampleMenu(interaction, message)
     async execute(interaction, args) { // That handles the interation submit response.
 
         try {
             // Destructuring assignment.
             const { user, guild } = interaction;
+            log.debug(args);
 
             // Log who used the command.
             log.info(`[/${fileName}] Menu executed by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
 
-            // Send a message confirming that the form has been submitted successfully.
-            await interaction.reply({ content: `You selected '${args.join('\', ')}' option(s) in exampleMenu.\n**Now with additional logic you can do something with it!**`, ephemeral: true });
+            // Send a reply to the user.
+            const reply = await interaction.reply({ content: `${EmojiEnums.LOADING} Preparing reseponse...`, ephemeral: true });
+
+            // Fake delay to appear as if the bot is doing something 😂
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            // Edit the reply
+            await reply.edit({ content: `${fileName} response is handled correctly.` });
 
         } catch (error) {
             new InteractionError(interaction, fileName).issue(error);
