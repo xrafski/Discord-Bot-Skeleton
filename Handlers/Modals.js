@@ -36,8 +36,12 @@ const loadAppModals = (client) =>
 
                     // Check if modal has name.
                     if (!modalInteraction?.name) {
+                        log.bug('This modal doesn\'t have a name variable:', file);
                         continue;
                     }
+
+                    // Log modal being loaded.
+                    log.debug(`[LOAD MODALS] Loaded '${modalInteraction.name}' application interaction modal.`);
 
                     // Add table row for this modal.
                     table.addRow(
@@ -54,9 +58,6 @@ const loadAppModals = (client) =>
                     // Set modal into modals collector.
                     client.modals.set(modalInteraction.name, modalInteraction);
 
-                    // Log modal being loaded.
-                    log.debug(`[LOAD MODALS] Loaded '${modalInteraction.name}' application interaction modal.`);
-
                 } catch (error) {
                     reject(`Error loading application interaction modal file '${file}': ${error.message}`);
                 }
@@ -64,7 +65,7 @@ const loadAppModals = (client) =>
 
             // Send a log when there are no modals loaded.
             if (client.modals.size === 0) {
-                resolve('[LOAD MODALS] No application interactions modals were found or enabled.');
+                resolve('[LOAD MODALS] ❌ No enabled interaction modals were found.');
             } else {
                 resolve(table.toString());
             }

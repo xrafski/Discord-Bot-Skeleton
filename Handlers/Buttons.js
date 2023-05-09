@@ -28,6 +28,7 @@ const loadAppButtons = (client) =>
 
             for (const file of appButtonFiles) {
                 try {
+
                     // Get full path to the button file.
                     const button_dir_root = path.join(process.cwd(), file);
 
@@ -36,8 +37,12 @@ const loadAppButtons = (client) =>
 
                     // Check if button has name.
                     if (!buttonInteraction?.name) {
+                        log.bug('This button doesn\'t have a name variable:', file);
                         continue;
                     }
+
+                    // Log button being loaded.
+                    log.debug(`[LOAD BUTTONS] Loaded '${buttonInteraction.name}' application interaction button.`);
 
                     // Add table row for this button.
                     table.addRow(
@@ -54,9 +59,6 @@ const loadAppButtons = (client) =>
                     // Set button into buttons collector.
                     client.buttons.set(buttonInteraction.name, buttonInteraction);
 
-                    // Log button being loaded.
-                    log.debug(`[LOAD BUTTONS] Loaded '${buttonInteraction.name}' application interaction button.`);
-
                 } catch (error) {
                     reject(`Error loading application interaction button file '${file}': ${error.message}`);
                 }
@@ -64,7 +66,7 @@ const loadAppButtons = (client) =>
 
             // Send a log when there are no buttons loaded.
             if (client.buttons.size === 0) {
-                resolve('[LOAD BUTTONS] No application interactions buttons were found or enabled.');
+                resolve('[LOAD BUTTONS] ❌ No enabled interaction buttons were found.');
             } else {
                 resolve(table.toString());
             }
