@@ -58,8 +58,12 @@ async function loadAppCmds(client) {
 
                     // Check if command has name.
                     if (!slashCommand.data?.name) {
+                        log.bug('This command doesn\'t have a name variable:', file);
                         continue;
                     }
+
+                    // Log command being loaded.
+                    log.debug(`[LOAD COMMANDS] Loaded '${slashCommand.data.name}' application interaction command.`);
 
                     // Check if command is disabled.
                     if (!slashCommand.enabled) {
@@ -68,9 +72,6 @@ async function loadAppCmds(client) {
 
                     // Set command into slashCommands collector.
                     client.commands.set(slashCommand.data.name, slashCommand);
-
-                    // Log command being loaded.
-                    log.debug(`[LOAD COMMANDS] Loaded '${slashCommand.data.name}' application interaction command.`);
 
                     // Finally split slashCommands into separate categories.
                     switch (slashCommand.guild) {
@@ -107,7 +108,7 @@ async function loadAppCmds(client) {
 
             // Send a log when there are no commands loaded.
             if (client.commands.size === 0) {
-                resolve('[LOAD COMMANDS] No application interactions commands were found or enabled.');
+                resolve('[LOAD COMMANDS] ❌ No enabled interaction commands were found.');
             } else {
                 resolve(table.toString());
             }

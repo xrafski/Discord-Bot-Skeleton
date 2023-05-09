@@ -36,8 +36,12 @@ const loadAppMenus = (client) =>
 
                     // Check if menu has name.
                     if (!menuInteraction?.name) {
+                        log.bug('This menu doesn\'t have a name variable:', file);
                         continue;
                     }
+
+                    // Log menu being loaded.
+                    log.debug(`[LOAD MENUS] Loaded '${menuInteraction.name}' application interaction selection menu.`);
 
                     // Add table row for this menu.
                     table.addRow(
@@ -54,9 +58,6 @@ const loadAppMenus = (client) =>
                     // Set menu into menus collector.
                     client.menus.set(menuInteraction.name, menuInteraction);
 
-                    // Log menu being loaded.
-                    log.debug(`[LOAD MENUS] Loaded '${menuInteraction.name}' application interaction selection menu.`);
-
                 } catch (error) {
                     reject(`Error loading application interaction selection menu file '${file}': ${error.message}`);
                 }
@@ -64,7 +65,7 @@ const loadAppMenus = (client) =>
 
             // Send a log when there are no menus loaded.
             if (client.menus.size === 0) {
-                resolve('[LOAD MENUS] No application interactions selection menus were found or enabled.');
+                resolve('[LOAD MENUS] ❌ No enabled interaction selection menus were found.');
             } else {
                 resolve(table.toString());
             }
