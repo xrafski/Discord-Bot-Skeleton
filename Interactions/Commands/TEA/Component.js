@@ -1,14 +1,13 @@
 /* eslint-disable quotes */
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { PermissionFlagsBits } = require('discord-api-types/v9');
-const { GuildNames } = require('../../../Addons/GuildNames');
 const log = require('../../../Addons/Logger');
 const { addCreateClubButtonMenu } = require('../../Menus/createClubButtonMenu');
-const { EmojiEnums } = require('../../../Addons/Enums');
+const { EmojiEnums, GuildEnums } = require('../../../Addons/Enums');
 
 module.exports = {
     enabled: true,
-    guild: GuildNames.TEA,
+    guild: GuildEnums.TEA,
     data: new SlashCommandBuilder()
         .setName('component')
         .setDescription('This interaction gives you the ability to add components buttons to your guild')
