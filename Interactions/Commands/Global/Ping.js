@@ -12,7 +12,7 @@ const STATUS_EMOJIS = ['✨', '🆗', '❗'];
 const fileName = path.basename(__filename).slice(0, -3).toLowerCase();
 
 module.exports = {
-	enabled: false,
+	enabled: true,
 	guild: GuildEnums.GLOBAL,
 	data: new SlashCommandBuilder()
 		.setName(fileName)
