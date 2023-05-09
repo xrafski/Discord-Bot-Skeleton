@@ -2,6 +2,7 @@ const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = req
 const log = require('../../Addons/Logger');
 const path = require('path');
 const { InteractionError } = require('../../Addons/Classes');
+const { EmojiEnums } = require('../../Addons/Enums');
 
 // Get file name.
 const fileName = path.basename(__filename).slice(0, -3);
@@ -71,15 +72,19 @@ module.exports = {
         try {
             // Destructuring assignment.
             const { user, guild } = interaction;
+            log.debug(args);
 
             // Log who used the command.
-            log.info(`[/${fileName}] Interaction modal executed by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
+            log.info(`[/${fileName}] Modal executed by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
 
-            // Log user arguments to the console.
-            log.info(args);
+            // Send a reply to the user.
+            const reply = await interaction.reply({ content: `${EmojiEnums.LOADING} Preparing reseponse...`, ephemeral: true });
 
-            // Send a message confirming that the form has been submitted successfully.
-            await interaction.reply({ content: 'You submitted the example modal!', ephemeral: true });
+            // Fake delay to appear as if the bot is doing something 😂
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            // Edit the reply
+            await reply.edit({ content: `${fileName} response is handled correctly.` });
 
         } catch (error) {
             new InteractionError(interaction, fileName).issue(error);
