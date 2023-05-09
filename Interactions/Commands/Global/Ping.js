@@ -1,8 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const log = require('../../../Addons/Logger');
 const path = require('path');
-const { GuildNames } = require('../../../Addons/GuildNames');
-const { EmojiEnums } = require('../../../Addons/Enums');
+const { EmojiEnums, GuildEnums } = require('../../../Addons/Enums');
 const { InteractionError } = require('../../../Addons/Classes');
 
 // Constants
@@ -14,7 +13,7 @@ const fileName = path.basename(__filename).slice(0, -3).toLowerCase();
 
 module.exports = {
 	enabled: false,
-	guild: GuildNames.GLOBAL,
+	guild: GuildEnums.GLOBAL,
 	data: new SlashCommandBuilder()
 		.setName(fileName)
 		.setDescription('Returns websocket connection ping.')
