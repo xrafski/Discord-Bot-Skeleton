@@ -7,7 +7,7 @@ const errorHandler = require('./Handlers/Errors');
 const eventHandler = require('./Handlers/Events');
 const loadAppModals = require('./Handlers/Modals');
 const loadAppMenus = require('./Handlers/Menus');
-const { loadContextAppCmds, registerGlobalContextCmds, contextAppCommands } = require('./Handlers/ContextMenus');
+const { loadContextAppCmds, registerGlobalContextCmds, contextAppCommands } = require('./Handlers/ContextMenu');
 
 // Create a new client instance
 const client = new Client({

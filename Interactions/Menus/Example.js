@@ -65,7 +65,7 @@ module.exports = {
             log.debug(args);
 
             // Log who used the command.
-            // log.info(`[/${fileName}] Menu executed by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
+            log.info(`[/${fileName}] Menu executed by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
 
             // Send a reply to the user.
             const reply = await interaction.reply({ content: `${EmojiEnums.LOADING} Preparing reseponse...`, ephemeral: true });

@@ -64,9 +64,6 @@ module.exports = {
                     }
                 }
 
-                // Log who used the command.
-                log.info(`[${interaction.commandName}] command executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
-
                 // Execute the command.
                 return command.execute(interaction, args);
             } catch (error) {
@@ -87,9 +84,6 @@ module.exports = {
                     log.bug('Non supported interaction button used:', interaction.customId);
                     return interaction.reply({ content: '🐛 It seems that this button is not valid and cannot be executed.\nTry again later...', ephemeral: true });
                 }
-
-                // Log who interacted with the button.
-                log.info(`[${interaction.customId}] Button pressed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
                 // Execute the button.
                 return button.execute(interaction);
@@ -121,9 +115,6 @@ module.exports = {
                     args.push(iterator.components[0].value);
                 }
 
-                // Log who interacted wtih the modal.
-                log.info(`[${interaction.customId}] Interaction used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
-
                 // Execute the modal.
                 return modal.execute(interaction, args);
             } catch (error) {
@@ -154,9 +145,6 @@ module.exports = {
                     args.push(option);
                 }
 
-                // Log who interacted with the String Select Menu
-                log.info(`[${interaction.customId}] Interaction used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
-
                 // Execute the selection.
                 return selection.execute(interaction, args);
             } catch (error) {
@@ -178,9 +166,6 @@ module.exports = {
 
                 // Create args array
                 const args = [];
-
-                // Log who ussed the Context Menu Command.
-                log.info(`[${interaction.commandName}] Context Menu Command executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
                 // Execute the command.
                 return context.execute(interaction);

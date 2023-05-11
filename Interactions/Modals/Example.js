@@ -15,7 +15,7 @@ async function showExampleModal(interaction) {
         const { user, guild } = interaction;
 
         // Log who used the command.
-        // log.info(`[/${fileName}] Interaction modal used by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
+        log.info(`[/${fileName}] Interaction modal used by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
 
         // Create the modal
         const exampleModal = new ModalBuilder()
