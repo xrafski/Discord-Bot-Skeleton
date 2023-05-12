@@ -17,15 +17,12 @@ module.exports = {
 
 	async execute(interaction, args) {
 		try {
-			// Destructuring assignment.
-			const { user, guild } = interaction;
-			log.debug('Arguments:', args);
-
-			// Log who used the command.
-			log.info(`[/${fileName}] Command executed by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
 
 			// Create reply to defer the command execution.
 			const reply = await interaction.reply({ content: `${EmojiEnums.LOADING} Preparing reseponse...`, ephemeral: true });
+
+			// Log with interaction arguments.
+			log.debug('Arguments:', args);
 
 			// Fake delay to appear as if the bot is doing something 😂
 			await new Promise((resolve) => setTimeout(resolve, 1000));

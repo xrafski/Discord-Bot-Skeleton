@@ -45,9 +45,9 @@ async function loadAppCmds(client) {
 
         try {
             // Load application interaction slash commands files.
-            const appCmdFiles = await glob('Interactions/Commands/**/*.js');
+            const appCmdFiles = await glob(['Interactions/Commands/**/*.js', 'Interactions/Context/**/*.js']);
 
-
+            // Go through all the files and load them into the corresponding array.
             for (const file of appCmdFiles) {
                 try {
                     // Get full path to the command file.

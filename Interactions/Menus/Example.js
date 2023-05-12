@@ -58,17 +58,13 @@ module.exports = {
     builder: exampleMenuBuilder,
     addExampleMenu, // Function to add selection menu component to a provided message object. Used on different files as: addExampleMenu(interaction, message)
     async execute(interaction, args) { // That handles the interation submit response.
-
         try {
-            // Destructuring assignment.
-            const { user, guild } = interaction;
-            log.debug(args);
 
-            // Log who used the command.
-            log.info(`[/${fileName}] Menu executed by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
-
-            // Send a reply to the user.
+            // Create reply to defer the command execution.
             const reply = await interaction.reply({ content: `${EmojiEnums.LOADING} Preparing reseponse...`, ephemeral: true });
+
+            // Log with interaction arguments.
+            log.debug('Arguments:', args);
 
             // Fake delay to appear as if the bot is doing something 😂
             await new Promise((resolve) => setTimeout(resolve, 1000));

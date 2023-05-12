@@ -68,17 +68,13 @@ module.exports = {
     name: fileName,
     showExampleModal, // Function to show modal to the user. Used on different files as: showExampleModal(interaction)
     async execute(interaction, args) { // That handles the interation submit response.
-
         try {
-            // Destructuring assignment.
-            const { user, guild } = interaction;
-            log.debug(args);
 
-            // Log who used the command.
-            log.info(`[/${fileName}] Modal executed by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
-
-            // Send a reply to the user.
+            // Create reply to defer the command execution.
             const reply = await interaction.reply({ content: `${EmojiEnums.LOADING} Preparing reseponse...`, ephemeral: true });
+
+            // Log with interaction arguments.
+            log.debug('Arguments:', args);
 
             // Fake delay to appear as if the bot is doing something 😂
             await new Promise((resolve) => setTimeout(resolve, 1000));
