@@ -1,50 +1,54 @@
 /* eslint-disable quotes */
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { PermissionFlagsBits } = require('discord-api-types/v9');
-const log = require('../../../Addons/Logger');
-const { addCreateClubButtonMenu } = require('../../Menus/createClubButtonMenu');
+const path = require('path');
 const { EmojiEnums, GuildEnums } = require('../../../Addons/Enums');
+const { InteractionError } = require('../../../Addons/Classes');
+const { ActionRowBuilder } = require('discord.js');
+
+// Get file name.
+const fileName = path.basename(__filename).slice(0, -3).toLowerCase();
 
 module.exports = {
     enabled: true,
     guild: GuildEnums.TEA,
     data: new SlashCommandBuilder()
-        .setName('component')
+        .setName(fileName)
         .setDescription('This interaction gives you the ability to add components buttons to your guild')
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 
         // Set the commandGroup for creating the interaction for guild.
-        .addSubcommandGroup((group) =>
-            group
+        .addSubcommand(subcommand =>
+            subcommand
                 .setName('create')
-                .setDescription('Creates a new components')
-                .addSubcommand(subcommand =>
-                    subcommand
-                        .setName('application_button')
-                        .setDescription("Creates a component button with application system for followed club.")
-                        .addStringOption(option =>
-                            option
-                                .setName('channel-id')
-                                .setDescription('Channel ID for the component to create')
-                                .setRequired(true)
-                        )
-                ),
+                .setDescription("Creates a component button with application system for followed club.")
+                .addStringOption(option =>
+                    option
+                        .setName('intraction-option')
+                        .setDescription('Choose an interaction to create')
+                        .setRequired(true)
+                        .addChoices(
+                            { name: 'Laezaria Club Button', value: 'laezClubApplyButton' },
+                            { name: 'Laezaria Verify Button', value: 'laezClubVerifyButton' },
+                            { name: 'THE NORTH Club Button', value: 'northClubApplyButton' },
+                        ))
+                .addStringOption(option =>
+                    option
+                        .setName('channel-id')
+                        .setDescription('Channel ID for the component to create')
+                        .setRequired(true)
+                )
         ),
 
     async execute(interaction, args) {
-        const { user, guild } = interaction;
-
-        // Log who used the command.
-        log.info(`[/COMPONENT] Command used by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
-
         try {
             // Create reply to defer the command execution.
             const reply = await interaction.reply({ content: `${EmojiEnums.LOADING} Preparing reseponse...`, ephemeral: true });
-            const [subCmdGroup, subCmd, channelID] = args; // Destructuring assignment
+            const [subCmd, interationName, channelID] = args; // Destructuring assignment
 
             // Check if channel ID is a number
             if (!Number.isInteger(Number(channelID))) {
-                return await reply.edit({ content: 'Your channel ID is not a valid number.' }); // CHANGEME: Make this string to also tell the user how to get the channel ID properly.
+                return await reply.edit({ content: 'Channel ID is not a valid number.' });
             }
 
             // Get the channel object from its ID.
@@ -53,22 +57,29 @@ module.exports = {
             // Check if tChannel is an object.
             if (!tChannel) return await reply.edit({ content: 'Channel with provided ID is not found.' });
 
-
             // Laezaria Add Application Button.
-            if (subCmdGroup === 'create' && subCmd === 'application_button') {
-                return addCreateClubButtonMenu(interaction, `${EmojiEnums.LOADING} Select components to post in ${tChannel}!`);
+            if (subCmd === 'create') {
+
+                // Assing variable to a interaction object.
+                const button = interaction.client.buttons.get(interationName);
+
+                // Check if interaction is valid and has builder method.
+                if (!button?.builder) {
+                    return reply.edit({ content: 'This interaction not exist or doesn\'t have a builder available.' });
+                }
+
+                // Create a new instance of ActionRowBuilder.
+                const row = new ActionRowBuilder()
+                    .addComponents(button.builder);
+
+                // Send a message to the target channel and edit reply to indicate success.
+                await tChannel.send({ components: [row] })
+                    .then(msg => {
+                        reply.edit({ content: `Interaction has been sent to: ${msg.url}` });
+                    });
             }
-
-            // Edit the reply to indicate success.
-            await reply.edit({ content: '✅ Your response is handled correctly.' });
         } catch (error) {
-            log.bug('[/COMPONENT] Interaction error:', error);
-
-            // Send an error message to the user.
-            await interaction.editReply({
-                content: '🥶 Something went wrong with this interaction. Please try again later.',
-                ephemeral: true
-            }).catch((editError) => log.bug('[/COMPONENT] Error editing interaction reply:', editError));
+            new InteractionError(interaction, fileName).issue(error);
         }
     },
 };
