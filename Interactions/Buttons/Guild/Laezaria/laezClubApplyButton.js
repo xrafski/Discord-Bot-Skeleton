@@ -12,7 +12,7 @@ const fileName = path.basename(__filename).slice(0, -3);
 const laezClubApplyButtonBuilder = new ButtonBuilder()
     .setCustomId(fileName)
     .setLabel('Apply to the club!')
-    .setEmoji('📝')
+    .setEmoji('<:laezaria:582281105298817032>')
     .setStyle(ButtonStyle.Primary);
 
 module.exports = {

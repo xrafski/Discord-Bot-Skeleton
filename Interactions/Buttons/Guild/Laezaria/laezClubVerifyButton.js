@@ -10,6 +10,7 @@ const fileName = path.basename(__filename).slice(0, -3);
 const laezClubVerifyButtonBuilder = new ButtonBuilder()
     .setCustomId(fileName)
     .setLabel('Nickname Verification')
+    .setEmoji('📝')
     .setStyle(ButtonStyle.Primary);
 
 module.exports = {

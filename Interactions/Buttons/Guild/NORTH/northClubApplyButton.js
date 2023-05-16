@@ -12,7 +12,7 @@ const fileName = path.basename(__filename).slice(0, -3);
 const northClubApplyButtonBuilder = new ButtonBuilder()
     .setCustomId(fileName)
     .setLabel('Apply')
-    .setEmoji('📝')
+    .setEmoji('<:northsigil:880166766372864040>')
     .setStyle(ButtonStyle.Primary);
 
 module.exports = {
