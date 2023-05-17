@@ -1,5 +1,4 @@
 const { ButtonBuilder, ButtonStyle } = require('discord.js');
-const log = require('../../../../Addons/Logger');
 const path = require('path');
 const { showLaezClubApplyModal } = require('../../../Modals/Guild/Laezaria/laezClubApplyModal');
 const { LaezariaEnums } = require('../../../../Addons/TempEnums');
@@ -22,9 +21,6 @@ module.exports = {
     async execute(interaction) { // Logic when user interact with this button.
 
         try {
-            // Log who used this interaction.
-            log.info(`[${fileName}] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
-
             // Check if interaction user is already a club member.
             const member = await interaction.guild.members.fetch(interaction.user.id);
             if (member.roles.cache.has(LaezariaEnums.MEMBER_ROLE_ID)) {

@@ -1,5 +1,4 @@
 const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js');
-const log = require('../../../../Addons/Logger');
 const path = require('path');
 const { laezClubApplyApproveButtonBuilder } = require('../../../Buttons/Guild/Laezaria/laezClubApplyApproveButton');
 const { laezClubApplyRejectButtonBuilder } = require('../../../Buttons/Guild/Laezaria/laezClubApplyRejectButton');
@@ -13,9 +12,6 @@ const fileName = path.basename(__filename).slice(0, -3);
 async function showLaezClubApplyModal(interaction) {
     // Make a modal using the discord builder module.
     try {
-        // Log who used this interaction.
-        log.info(`[${fileName}] Interaction used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
-
         // Create the modal
         const laezClubApplyModalBuilder = new ModalBuilder()
             .setCustomId('laezClubApplyModal')
@@ -90,7 +86,6 @@ module.exports = {
     name: fileName,
     showLaezClubApplyModal, // Function to show modal to the user. Used on different files as: showLaezClubApplyModal(interaction)
     async execute(interaction, args) { // That handles the interation submit response.
-
         /**
          * Checks if a URL is a valid image URL.
          * @param {string} url - The URL to check.
@@ -101,9 +96,6 @@ module.exports = {
         }
 
         try {
-            // Log who executed this interaction.
-            log.info(`[${fileName}] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
-
             const [nickname, powerRank, masteryRank, whyJoin, proofImage] = args; // Destructuring assignment
             const userResponses = { nickname, powerRank, masteryRank, whyJoin, proofImage }; // Object with user responses provided within the modal.
             let imgProofImage = userResponses.proofImage; // Variable to check if proof image is actually an image.

@@ -1,5 +1,4 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
-const log = require('../../../../Addons/Logger');
 const path = require('path');
 const { northClubApplyConfirmInviteButtonBuilder } = require('../NORTH/northClubApplyConfirmInviteButton');
 const { northClubApplyRequestInviteButtonBuilder } = require('../NORTH/northClubApplyRequestInviteButton');
@@ -23,9 +22,6 @@ module.exports = {
     async execute(interaction) {// Logic when user interact with this button
 
         try {
-            // Log who used this interaction.
-            log.info(`[${fileName}] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
-
             // Create reply to defer the button execution.
             const reply = await interaction.reply({ content: `${EmojiEnums.LOADING} Preparing response...`, ephemeral: true });
 

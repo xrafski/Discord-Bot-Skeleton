@@ -1,5 +1,4 @@
 const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js');
-const log = require('../../../../Addons/Logger');
 const path = require('path');
 const { northClubApplyApproveButtonBuilder } = require('../../../Buttons/Guild/NORTH/northClubApplyApproveButton');
 const { northClubApplyRejectButtonBuilder } = require('../../../Buttons/Guild/NORTH/northClubApplyRejectButton');
@@ -11,9 +10,6 @@ const { EmojiEnums } = require('../../../../Addons/Enums');
 const fileName = path.basename(__filename).slice(0, -3);
 
 async function showNorthClubApplyModal(interaction) {
-    // Log who used this interaction
-    log.info(`[${fileName}] Interaction used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
-
     // Make a modal using the discord builder module
     try {
         // Create the modal
@@ -97,9 +93,6 @@ module.exports = {
         }
 
         try {
-            // Log who executed this interaction.
-            log.info(`[${fileName}] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
-
             const [nickname, whatPlaying, aboutYourself, whyJoin, proofImage] = args; // Destructuring assignment
             const userResponses = { nickname, whatPlaying, aboutYourself, whyJoin, proofImage }; // Object with user responses provided with the modal
             let imgProofImage = userResponses.proofImage; // Variable to check if proof image is actually an image.

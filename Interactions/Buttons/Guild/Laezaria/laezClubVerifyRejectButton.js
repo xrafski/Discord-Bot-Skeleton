@@ -1,5 +1,4 @@
 const { ButtonBuilder, ButtonStyle } = require('discord.js');
-const log = require('../../../../Addons/Logger');
 const { showLaezClubVerifyRejectReasonModal } = require('../../../Modals/Guild/Laezaria/laezClubVerifyRejectReasonModal');
 const path = require('path');
 const { InteractionError } = require('../../../../Addons/Classes');
@@ -20,9 +19,6 @@ module.exports = {
     async execute(interaction) { // Logic when use interacts with this button.
 
         try {
-            // Log who used this interaction.
-            log.info(`[${fileName}] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
-
             // Display modal to the interaction.user interface.
             showLaezClubVerifyRejectReasonModal(interaction); // Entire logic to reject application is under this reason modal.
 

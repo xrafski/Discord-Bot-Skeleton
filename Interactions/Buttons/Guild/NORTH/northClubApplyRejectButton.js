@@ -1,5 +1,4 @@
 const { ButtonBuilder, ButtonStyle } = require('discord.js');
-const log = require('../../../../Addons/Logger');
 const path = require('path');
 const { showNorthClubApplyRejectReasonModal } = require('../../../Modals/Guild/NORTH/northClubApplyRejectReasonModal');
 const { NorthEnums } = require('../../../../Addons/TempEnums');
@@ -21,9 +20,6 @@ module.exports = {
     async execute(interaction) { // Logic when user interact with this button.
 
         try {
-            // Log who executed this interaction.
-            log.info(`[${fileName}] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
-
             // Get the member object in that guild.
             const member = await interaction.guild.members.fetch(interaction.user.id);
 

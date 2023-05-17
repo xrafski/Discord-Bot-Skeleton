@@ -1,5 +1,4 @@
 const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js');
-const log = require('../../../../Addons/Logger');
 const path = require('path');
 const { InteractionError } = require('../../../../Addons/Classes');
 const { EmojiEnums } = require('../../../../Addons/Enums');
@@ -9,9 +8,6 @@ const { LaezariaEnums } = require('../../../../Addons/TempEnums');
 const fileName = path.basename(__filename).slice(0, -3);
 
 async function showLaezClubApplyRejectReasonModal(interaction) {
-    // Log who used this interaction.
-    log.info(`[${fileName}] Interaction used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
-
     // Make a modal using the discord builder module.
     try {
         // Variable with original embed data.
@@ -52,9 +48,6 @@ module.exports = {
     async execute(interaction, args) { // That handles the interation submit response.
 
         try {
-            // Log who executed this interaction.
-            log.info(`[${fileName}] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
-
             // Create reply to defer the button execution.
             await interaction.reply({ content: `${EmojiEnums.LOADING} Preparing response...`, ephemeral: true });
 

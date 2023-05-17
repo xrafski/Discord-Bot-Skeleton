@@ -1,8 +1,8 @@
 const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js');
-const log = require('../../../../Addons/Logger');
 const path = require('path');
 const { LaezariaEnums } = require('../../../../Addons/TempEnums');
 const { EmojiEnums } = require('../../../../Addons/Enums');
+const { InteractionError } = require('../../../../Addons/Classes');
 
 // Get file name.
 const fileName = path.basename(__filename).slice(0, -3);
@@ -11,9 +11,6 @@ async function showLaezClubVerifyRejectReasonModal(interaction) {
 
     // Make a modal using the discord builder module.
     try {
-        // Log who used this interaction.
-        log.info(`[${fileName}] Interaction used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
-
         // Variable with original embed data
         const originalEmbed = await interaction.message.embeds[0];
 
@@ -39,7 +36,7 @@ async function showLaezClubVerifyRejectReasonModal(interaction) {
         await interaction.showModal(laezClubVerifyRejectReasonModalBuilder);
 
     } catch (error) {
-        log.bug(`[${fileName}] Error to execute this modal:`, error);
+        new InteractionError(interaction, fileName).issue(error);
     }
 }
 
@@ -51,9 +48,6 @@ module.exports = {
     async execute(interaction, args) { // That handles the interaction submit response
 
         try {
-            // Log who executed this interaction.
-            log.info(`[${fileName}] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
-
             // Create reply to defer the button execution.
             const reply = await interaction.reply({ content: `${EmojiEnums.LOADING} Preparing response...`, ephemeral: true });
 
@@ -117,12 +111,7 @@ module.exports = {
 
 
         } catch (error) {
-            log.bug(`[${fileName}] Error to execute this modal:`, error);
-
-            // Send an error message to the user.
-            await interaction.editReply({
-                content: '🥶 Something went wrong with this interaction. Please try again later.',
-            }).catch((responseError) => log.bug(`[${fileName}] Error editing interaction reply:`, responseError));
+            new InteractionError(interaction, fileName).issue(error);
         }
     }
 };

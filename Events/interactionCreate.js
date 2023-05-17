@@ -79,7 +79,7 @@ module.exports = {
             case (interaction.isButton()): { // Button handler.
                 try {
                     // Log who used this interaction.
-                    log.info(`[${interaction.commandName}] button used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
+                    log.info(`[${interaction.customId}] button used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
                     // Assing variable to a button.
                     const button = client.buttons.get(interaction.customId);
@@ -103,7 +103,7 @@ module.exports = {
             case (interaction.isUserContextMenuCommand()): { // User context command handler.
                 try {
                     // Log who used this interaction.
-                    log.info(`[/${interaction.commandName}] user context command used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
+                    log.info(`[${interaction.commandName}] user context command used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
                     // Assing variable to a context command.
                     const context = client.commands.get(interaction.commandName);
@@ -124,7 +124,7 @@ module.exports = {
             case (interaction.isMessageContextMenuCommand()): { // Message context command handler.
                 try {
                     // Log who used this interaction.
-                    log.info(`[/${interaction.commandName}] user context command used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
+                    log.info(`[${interaction.commandName}] user context command used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
                     // Assing variable to a context command.
                     const context = client.commands.get(interaction.commandName);
@@ -145,7 +145,7 @@ module.exports = {
             case (interaction.isModalSubmit()): { // Modal handler.
                 try {
                     // Log who used this interaction.
-                    log.info(`[${interaction.commandName}] modal used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
+                    log.info(`[${interaction.customId}] modal used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
                     // Assing variable to a modal.
                     const modal = client.modals.get(interaction.customId);
@@ -177,7 +177,7 @@ module.exports = {
             case (interaction.isStringSelectMenu()): { // Select menu handler.
                 try {
                     // Log who used this interaction.
-                    log.info(`[${interaction.commandName}] select menu used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
+                    log.info(`[${interaction.customId}] select menu used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
 
                     // Assing variable to a selection.
                     const selection = client.menus.get(interaction.customId);

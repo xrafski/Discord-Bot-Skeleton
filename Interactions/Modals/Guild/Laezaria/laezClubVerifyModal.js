@@ -1,5 +1,4 @@
 const { ModalBuilder, TextInputBuilder, ActionRowBuilder, EmbedBuilder, TextInputStyle } = require('discord.js');
-const log = require('../../../../Addons/Logger');
 const { laezClubVerifyApproveButtonBuilder } = require('../../../Buttons/Guild/Laezaria/laezClubVerifyApproveButton');
 const { laezClubVerifyRejectButtonBuilder } = require('../../../Buttons/Guild/Laezaria/laezClubVerifyRejectButton');
 const path = require('path');
@@ -14,9 +13,6 @@ async function showLaezClubVerifyModal(interaction) {
 
     // Make a modal using the discord builder module.
     try {
-        // Log who used this interaction.
-        log.info(`[${fileName}] Interaction used by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
-
         // Create the modal
         const laezClubVerifyModalBuilder = new ModalBuilder()
             .setCustomId(fileName)
@@ -50,13 +46,7 @@ async function showLaezClubVerifyModal(interaction) {
         await interaction.showModal(laezClubVerifyModalBuilder);
 
     } catch (error) { // Catch any potential errors.
-        log.bug(`[${fileName}] Error to execute this modal:`, error);
-
-        // Send an error message to the user.
-        await interaction.reply({
-            content: '🥶 Something went wrong with this interaction. Please try again later.',
-            ephemeral: true
-        }).catch((editError) => log.bug(`[${fileName}] Error sending interaction reply:`, editError));
+        new InteractionError(interaction, fileName).issue(error);
     }
 }
 
@@ -77,9 +67,6 @@ module.exports = {
         }
 
         try {
-            // Log who executed this interaction.
-            log.info(`[${fileName}] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
-
             // Create reply to defer the button execution.
             const reply = await interaction.reply({ content: `${EmojiEnums.LOADING} Preparing response...`, ephemeral: true });
 

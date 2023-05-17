@@ -1,5 +1,4 @@
 const { ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
-const log = require('../../../../Addons/Logger');
 const path = require('path');
 const { NorthEnums } = require('../../../../Addons/TempEnums');
 const { InteractionError } = require('../../../../Addons/Classes');
@@ -21,9 +20,6 @@ module.exports = {
     async execute(interaction) { // Logic when user interacts with the button.
 
         try {
-            // Log who executed this interaction.
-            log.info(`[${fileName}] Interaction executed by '${interaction.user?.tag}' on the ${interaction.guild?.name ? `'${interaction.guild.name}' guild.` : 'direct message.'}`);
-
             // Create reply to defer the button execution.
             const reply = await interaction.reply({ content: `${EmojiEnums.LOADING} Preparing response...`, ephemeral: true });
 
