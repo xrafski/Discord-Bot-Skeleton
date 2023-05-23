@@ -26,7 +26,7 @@ function apiCall(url, method, data) {
 
         // Validate JSON input parameter.
         if (data) {
-            if (isValidJSON(data) === false) reject(new Error('Data must be a valid JSON string.'));
+            if (isValidJSON(data) === false) return reject(new Error('Data must be a valid JSON string.'));
         }
 
         // Make options object for Axios to handle requests.
