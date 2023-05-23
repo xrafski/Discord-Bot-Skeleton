@@ -29,7 +29,7 @@ class InteractionError {
             if (error.name === 'AxiosError') {
                 return await sendInteractionResponse(this.interaction, 'API', error.message);
             } else { // Handle default error.
-                await sendInteractionResponse(this.interaction, 'this interaction', undefined);
+                await sendInteractionResponse(this.interaction, 'this interaction', error.message);
             }
 
         } catch (responseError) {
