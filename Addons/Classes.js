@@ -49,7 +49,7 @@ class InteractionError {
 async function sendInteractionResponse(interaction, thing, errMsg) {
     // Check if interaction is already replied and respond accordingly.
     if (interaction.replied) {
-        await interaction.reply({
+        await interaction.editReply({
             content: `🥶 Something went wrong with ${thing}.${errMsg ? `\n> ${errMsg}` : ''}\nPlease try again later.`
         });
     } else { // Otherwise just send the interaction reply.
