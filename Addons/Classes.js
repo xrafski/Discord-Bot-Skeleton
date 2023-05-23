@@ -25,21 +25,38 @@ class InteractionError {
             // Log the error to the console.
             log.bug(`[${this.fileName}] Interaction error:`, error);
 
-            // Check if interaction is already replied and respond accordingly.
-            if (this.interaction.replied) {
-                await this.interaction.editReply({
-                    content: '🥶 Something went wrong with this interaction.\nPlease try again later.'
-                });
-            } else { // Otherwise just send the interaction reply.
-                await this.interaction.reply({
-                    content: '🥶 Something went wrong with this interaction.\nPlease try again later.',
-                    ephemeral: true,
-                });
+            // Handle Axios Error.
+            if (error.name === 'AxiosError') {
+                return await sendInteractionResponse(this.interaction, 'API', error.message);
+            } else { // Handle default error.
+                await sendInteractionResponse(this.interaction, 'this interaction', error.message);
             }
 
         } catch (responseError) {
-            log.bug(`[${this.fileName}] Interaction error reply:`, responseError);
+            log.bug(`[${this.fileName}] InteractionError Class Error:`, responseError);
         }
+    }
+}
+
+/**
+ * Send an interaction response with an error message.
+ * @async
+ * @param {Discord.Interaction} interaction - The Discord interaction object.
+ * @param {string} thing - The description of the thing that encountered an error.
+ * @param {string} errMsg - The error message to display (optional).
+ * @returns {Promise<void>}
+ */
+async function sendInteractionResponse(interaction, thing, errMsg) {
+    // Check if interaction is already replied and respond accordingly.
+    if (interaction.replied) {
+        await interaction.editReply({
+            content: `🥶 Something went wrong with ${thing}.${errMsg ? `\n> ${errMsg}` : ''}\nPlease try again later.`
+        });
+    } else { // Otherwise just send the interaction reply.
+        await interaction.reply({
+            content: `🥶 Something went wrong with ${thing}.${errMsg ? `\n> ${errMsg}` : ''}\nPlease try again later.`,
+            ephemeral: true,
+        });
     }
 }
 
