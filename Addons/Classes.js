@@ -38,15 +38,23 @@ class InteractionError {
     }
 }
 
-async function sendInteractionResponse(interaction, str, errMsg) {
+/**
+ * Send an interaction response with an error message.
+ * @async
+ * @param {Discord.Interaction} interaction - The Discord interaction object.
+ * @param {string} thing - The description of the thing that encountered an error.
+ * @param {string} errMsg - The error message to display (optional).
+ * @returns {Promise<void>}
+ */
+async function sendInteractionResponse(interaction, thing, errMsg) {
     // Check if interaction is already replied and respond accordingly.
     if (interaction.replied) {
-        await interaction.editReply({
-            content: `🥶 Something went wrong with ${str}.${errMsg ? `\n> ${errMsg}` : ''}\nPlease try again later.`
+        await interaction.reply({
+            content: `🥶 Something went wrong with ${thing}.${errMsg ? `\n> ${errMsg}` : ''}\nPlease try again later.`
         });
     } else { // Otherwise just send the interaction reply.
         await interaction.reply({
-            content: `🥶 Something went wrong with ${str}.${errMsg ? `\n> ${errMsg}` : ''}\nPlease try again later.`,
+            content: `🥶 Something went wrong with ${thing}.${errMsg ? `\n> ${errMsg}` : ''}\nPlease try again later.`,
             ephemeral: true,
         });
     }
