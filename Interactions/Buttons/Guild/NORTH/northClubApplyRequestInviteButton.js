@@ -43,16 +43,16 @@ module.exports = {
                 if (!member.roles.cache.has(NorthEnums.roles.MEMBER_ID)) {
                     await inboxChannel.send(`Reminder <@&${NorthEnums.roles.STAFF_ID}>, <@${interaction.user.id}> is ready to be invited to THE NORTH`);
                 }
-            }, 1000 * 60 * 5); // CHANGEME
+            }, 1000 * 60 * 5); // 5minute reminder.
 
             // Fetch DM channel.
             await interaction.user.createDM();
 
             // Edit the interacted message to update to Request Sent embed and remove the request button to prevent spam.
-            interaction.message.edit({ content: 'Great!\nThe request has been sent!', embeds: [requestSentEmbed], components: [] });
+            interaction.message.edit({ content: null, embeds: [requestSentEmbed], components: [] });
 
             // Edit reply to confirm that request was sent.
-            reply.edit({ content: 'Request sent successfully' });
+            reply.edit({ content: 'Invite request has been sent...' });
         } catch (error) {
             new InteractionError(interaction, fileName).issue(error);
         }

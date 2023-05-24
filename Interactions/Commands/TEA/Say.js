@@ -30,17 +30,13 @@ module.exports = {
 
     async execute(interaction, args) {
         try {
-            // Destructuring assignment
-            const { user, guild } = interaction;
-
-            // Log who used the command.
-            log.info(`[/${fileName}] Command used by '${user?.tag}' on the ${guild?.name ? `'${guild.name}' guild.` : 'direct message.'}`);
+            const [text, attachment] = args; // Destructuring assignment
 
             // Create reply to defer the command execution.
             const reply = await interaction.reply({ content: `${EmojiEnums.LOADING} Sending message...`, ephemeral: true });
 
             // Assign values to variables.
-            const content = args[0] ?? null;
+            const content = text ?? null;
 
             // Send a joke empty message if no arguments are passed.
             if (!args.length) {
@@ -51,9 +47,9 @@ module.exports = {
             }
 
             // Send a message with the attachment argument.
-            if (args[1]) {
+            if (attachment) {
                 // Send channel message with an attachment.
-                return await interaction.channel.send({ content, files: [args[1]] })
+                return await interaction.channel.send({ content, files: [attachment] })
                     .then(async msg => {
                         await reply.edit({ content: `✅ Your message (${msg.url}) has been sent correctly.` });
                     });

@@ -1,5 +1,9 @@
 const { ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
-const log = require('../../Addons/Logger');
+const path = require('path');
+const { InteractionError } = require('../../../Addons/Classes');
+
+// Get file name.
+const fileName = path.basename(__filename).slice(0, -3).toLowerCase();
 
 /**
  * Adds a selection menu using the Discord builder module to the specified message.
@@ -14,7 +18,7 @@ async function addCreateClubButtonMenu(interaction, message) {
         const row = new ActionRowBuilder()
             .addComponents(
                 new StringSelectMenuBuilder()
-                    .setCustomId('createClubButtonMenu')
+                    .setCustomId(fileName)
                     .setPlaceholder('Nothing selected')
                     .setMinValues(1)
                     .setMaxValues(1)
@@ -42,21 +46,14 @@ async function addCreateClubButtonMenu(interaction, message) {
         });
 
     } catch (error) {
-        // Catch any potential errors.
-        log.bug('[createClubButtonMenu] Interaction selection menu error:', error);
-
-        // Send an error message to the user.
-        await interaction.reply({
-            content: '🥶 Something went wrong with this interaction. Please try again later.',
-            ephemeral: true
-        }).catch((editError) => log.bug('[createClubButtonMenu] Error sending interaction reply:', editError));
+        new InteractionError(interaction, fileName).issue(error);
     }
 }
 
 // Export logic that will be executed when the selection menu option is selected.
 module.exports = {
-    enabled: true,
-    name: 'createClubButtonMenu',
+    enabled: false,
+    name: fileName,
     addCreateClubButtonMenu, // Function to add selection menu component to a provided message object. Used on different files as: addCreateClubButtonMenu(interaction, message)
     async execute(interaction, args) { // That handles the interation submit response.
 
@@ -90,13 +87,7 @@ module.exports = {
             await interaction.reply({ content: `Selected button(s) has been added successfully.\n${newMessage.url}`, ephemeral: true });
 
         } catch (error) {
-            log.bug('[createClubButtonMenu] Interaction selection menu error', error);
-
-            // Send an error message to the user.
-            await interaction.reply({
-                content: '🥶 Something went wrong with this interaction. Please try again later.',
-                ephemeral: true
-            }).catch((responseError) => log.bug('[createClubButtonMenu] Error editing interaction reply:', responseError));
+            new InteractionError(interaction, fileName).issue(error);
         }
     }
 };
